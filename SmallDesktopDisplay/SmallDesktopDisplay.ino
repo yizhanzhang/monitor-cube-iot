@@ -164,16 +164,6 @@ void LCD_reflash(int en);
     函数
  * *****************************************************************/
 
-//TFT屏幕输出函数
-bool tft_output(int16_t x, int16_t y, uint16_t w, uint16_t h, uint16_t* bitmap)
-{
-  if ( y >= tft.height() ) return 0;
-  tft.pushImage(x, y, w, h, bitmap);
-  // Return 1 to decode next block
-  return 1;
-}
-
-
 //进度条函数
 byte loadNum = 6;           //原始默认为6
 void loading(byte delayTime)//绘制进度条
@@ -185,19 +175,12 @@ void loading(byte delayTime)//绘制进度条
 
   imgAnimLoad();
 
-
-  //  clk.drawRoundRect(0, 0, 200, 16, 8, 0xFFFF);  //空心圆角矩形
-  //  clk.fillRoundRect(3, 3, loadNum, 10, 5, 0xFFFF); //实心圆角矩形
   clk.setTextDatum(CC_DATUM);   //设置文本数据
   clk.setTextColor(TFT_ORANGE, 0x0000);
-  clk.drawString("Monitor Cube!", 100, 30, 4);//Connecting to WiFi......
+  clk.drawString("Monitor Cube!", 100, 30, 4);
   clk.setTextColor(TFT_WHITE, 0x0000);
   clk.drawRightString(Version, 200, 90, 1);
   clk.pushSprite(20, 130); //窗口位置
-
-  //  clk.setTextDatum(CC_DATUM);
-  //  clk.setTextColor(TFT_WHITE, 0x0000);
-  //  clk.pushSprite(130,180);
 
   clk.deleteSprite();
 
@@ -578,20 +561,18 @@ void setup()
 {
   Serial.begin(115200);
   EEPROM.begin(1024);
-  // WiFi.forceSleepWake();
-  // wm.resetSettings();
 
   // 初始化LCD屏相关配置
-  mcLcd.initLcd(&tft);
+  mcLcd.initLcd();
+  // 初始化jpg配置
+  mcLcd.initTJpgDec();
 
   /* 初始化wifi相关配置 */
   // 从EEPROM中读取配置
   mcWifi.readWifiConfig();
+  // 按照配置尝试进行连接
   mcWifi.link();
 
-  TJpgDec.setJpgScale(1);
-  TJpgDec.setSwapBytes(true);
-  TJpgDec.setCallback(tft_output);
 
   while (WiFi.status() != WL_CONNECTED)
   {
@@ -629,9 +610,7 @@ void setup()
   setSyncProvider(getNtpTime);
   setSyncInterval(300);
 
-  TJpgDec.setJpgScale(1);
-  TJpgDec.setSwapBytes(true);
-  TJpgDec.setCallback(tft_output);
+  mcLcd.initTJpgDec();
 
   int CityCODE = 0;
   for (int cnum = 5; cnum > 0; cnum--)
