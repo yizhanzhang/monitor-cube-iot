@@ -108,10 +108,9 @@ McLcd       mcLcd;
 McWifi      mcWifi;
 
 //LCD屏幕相关设置
-TFT_eSPI tft = TFT_eSPI(); // 引脚请自行配置tft_espi库中的 User_Setup.h文件
+TFT_eSPI tft = TFT_eSPI();
 TFT_eSprite clk = TFT_eSprite(&tft);
 
-#define LCD_BL_PIN 5    //LCD背光引脚
 uint16_t bgColor = 0x0000;
 
 //其余状态标志位
@@ -257,10 +256,7 @@ void Serial_set()
         LCD_BL_PWM = EEPROM.read(BL_addr);
         delay(5);
         SMOD = "";
-        Serial.printf("亮度调整为：");
-        analogWrite(LCD_BL_PIN, 1023 - (LCD_BL_PWM * 10));
-        Serial.println(LCD_BL_PWM);
-        Serial.println("");
+        mcLcd.setBrightness(&tft, LCD_BL_PWM);
       }
       else
         Serial.println("亮度调整错误，请输入0-100");
@@ -572,9 +568,7 @@ void saveParamCallback() {
     delay(5);
   }
   //屏幕亮度
-  Serial.printf("亮度调整为：");
-  analogWrite(LCD_BL_PIN, 1023 - (LCD_BL_PWM * 10));
-  Serial.println(LCD_BL_PWM);
+  mcLcd.setBrightness(&tft, LCD_BL_PWM);
   //天气更新时间
   Serial.printf("天气更新时间调整为：");
   Serial.println(updateweater_time);
