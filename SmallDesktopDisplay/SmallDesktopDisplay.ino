@@ -1,22 +1,3 @@
-/**
-  * @brief monitor cube
-  * @authors yizhanzhang
-  * @details a monitor cube to show cpu, mem, and net speed
-  */
-
-/**
-  引脚分配:
-    SCK   GPIO14
-    MOSI  GPIO13
-    RES   GPIO2
-    DC    GPIO0
-    LCDBL GPIO5
-    增加DHT11温湿度传感器，传感器接口为 GPIO 12
-  */
-
-/* *****************************************************************
-    库文件、头文件
- * *****************************************************************/
 #include "ArduinoJson.h"
 #include <TimeLib.h>
 #include <ESP8266WiFi.h>
@@ -28,10 +9,10 @@
 #include <TJpg_Decoder.h>
 #include <EEPROM.h>
 #include <WiFiManager.h>
-#include "qr.h"
 #include "number.h"
 #include "weathernum.h"
 #include "mclcd.h"
+#include "mcwifi.h"
 
 
 #define Version  "www.zhanspace.cn"
@@ -115,16 +96,6 @@ int appearTime = 0;      //太空人更新时间记录
     参数设置
  * *****************************************************************/
 
-struct config_type
-{
-  char stassid[32];//定义配网得到的WIFI名长度(最大32字节)
-  char stapsw[64];//定义配网得到的WIFI密码长度(最大64字节)
-};
-
-//---------------修改此处""内的信息--------------------
-//如开启WEB配网则可不用设置这里的参数，前一个为wifi ssid，后一个为密码
-config_type wificonf = {{""}, {""}};
-
 //天气更新时间  X 分钟
 int updateweater_time = 10;
 
@@ -134,6 +105,7 @@ int updateweater_time = 10;
 Number      dig;
 WeatherNum  wrat;
 McLcd       mcLcd;
+McWifi      mcWifi;
 
 //LCD屏幕相关设置
 TFT_eSPI tft = TFT_eSPI(); // 引脚请自行配置tft_espi库中的 User_Setup.h文件
@@ -154,7 +126,6 @@ int DHT_img_flag = 0;   //DHT传感器使用标志位
 time_t prevDisplay = 0;       //显示时间显示记录
 unsigned long weaterTime = 0; //天气更新时间记录
 
-uint32_t targetTime = 0;
 String cityCode = "0";  //天气城市代码 
 int tempnum = 0;   //温度百分比
 int huminum = 0;   //湿度百分比
@@ -188,58 +159,11 @@ void printDigits(int digits);
 String num2str(int digits);
 void sendNTPpacket(IPAddress &address);
 void LCD_reflash(int en);
-void savewificonfig();
-void readwificonfig();
-void deletewificonfig();
 
 
 /* *****************************************************************
     函数
  * *****************************************************************/
-
-//wifi ssid，psw保存到eeprom
-void savewificonfig()
-{
-  //开始写入
-  uint8_t *p = (uint8_t*)(&wificonf);
-  for (int i = 0; i < sizeof(wificonf); i++)
-  {
-    EEPROM.write(i + wifi_addr, *(p + i)); //在闪存内模拟写入
-  }
-  delay(10);
-  EEPROM.commit();//执行写入ROM
-  delay(10);
-}
-//删除原有eeprom中的信息
-void deletewificonfig()
-{
-  config_type deletewifi = {{""}, {""}};
-  uint8_t *p = (uint8_t*)(&deletewifi);
-  for (int i = 0; i < sizeof(deletewifi); i++)
-  {
-    EEPROM.write(i + wifi_addr, *(p + i)); //在闪存内模拟写入
-  }
-  delay(10);
-  EEPROM.commit();//执行写入ROM
-  delay(10);
-}
-
-//从eeprom读取WiFi信息ssid，psw
-void readwificonfig()
-{
-  uint8_t *p = (uint8_t*)(&wificonf);
-  for (int i = 0; i < sizeof(wificonf); i++)
-  {
-    *(p + i) = EEPROM.read(i + wifi_addr);
-  }
-  // EEPROM.commit();
-  // ssid = wificonf.stassid;
-  // pass = wificonf.stapsw;
-  Serial.printf("Read WiFi Config.....\r\n");
-  Serial.printf("SSID:%s\r\n", wificonf.stassid);
-  Serial.printf("PSW:%s\r\n", wificonf.stapsw);
-  Serial.printf("Connecting.....\r\n");
-}
 
 //TFT屏幕输出函数
 bool tft_output(int16_t x, int16_t y, uint16_t w, uint16_t h, uint16_t* bitmap)
@@ -456,7 +380,7 @@ void Serial_set()
         Serial.println("重置WiFi设置中......");
         delay(10);
         wm.resetSettings();
-        deletewificonfig();
+        mcWifi.deleteWifiConfig();
         delay(10);
         Serial.println("重置WiFi成功");
         SMOD = "";
@@ -661,16 +585,15 @@ void setup()
   Serial.begin(115200);
   EEPROM.begin(1024);
   // WiFi.forceSleepWake();
-  // wm.resetSettings();    //在初始化中使wifi重置，需重新配置WiFi
+  // wm.resetSettings();
 
-  /* 从eeprom读取存储的配置 */
+  // 初始化LCD屏相关配置
   mcLcd.initLcd(&tft);
 
-  targetTime = millis() + 1000;
-  readwificonfig();//读取存储的wifi信息
-  Serial.print("正在连接WIFI ");
-  Serial.println(wificonf.stassid);
-  WiFi.begin(wificonf.stassid, wificonf.stapsw);
+  /* 初始化wifi相关配置 */
+  // 从EEPROM中读取配置
+  mcWifi.readWifiConfig();
+  mcWifi.link();
 
   TJpgDec.setJpgScale(1);
   TJpgDec.setSwapBytes(true);
@@ -682,7 +605,6 @@ void setup()
 
     if (loadNum >= 194)
     {
-      //使能web配网后自动将smartconfig配网失效
       Web_win();
       Webconfig();
       break;
@@ -700,10 +622,9 @@ void setup()
     Serial.println(WiFi.SSID().c_str());
     Serial.print("PSW:");
     Serial.println(WiFi.psk().c_str());
-    strcpy(wificonf.stassid, WiFi.SSID().c_str()); //名称复制
-    strcpy(wificonf.stapsw, WiFi.psk().c_str()); //密码复制
-    savewificonfig();
-    readwificonfig();
+    mcWifi.setWifiConfig(WiFi.SSID().c_str(), WiFi.psk().c_str());
+    mcWifi.saveWifiConfig();
+    mcWifi.readWifiConfig();
   }
 
   Serial.print("本地IP： ");

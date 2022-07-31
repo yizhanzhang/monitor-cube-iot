@@ -1,6 +1,10 @@
 {
   "cSpell.words": [
     "EEPROM",
+    "SSID",
+    "stapsw",
+    "stassid",
+    "wrat",
     "zhanspace"
   ],
   "files.associations": {
@@ -8,6 +12,7 @@
     "*.cjson": "jsonc",
     "*.wxss": "css",
     "*.wxs": "javascript",
-    "compare": "cpp"
+    "compare": "cpp",
+    "ostream": "cpp"
   }
 }

@@ -9,7 +9,7 @@ class McLcd
 private:
 
 public:
-  void initLcd(TFT_eSPI* tft);
+  void initLcd(TFT_eSPI *tft);
 };
 
 

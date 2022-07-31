@@ -8,7 +8,7 @@ extern int LCD_Rotation;
 extern int LCD_BL_PWM;
 extern uint16_t bgColor;
 
-void McLcd::initLcd(TFT_eSPI* tft)
+void McLcd::initLcd(TFT_eSPI *tft)
 {
   Serial.println("McLcd: initLcd");
   // 背光亮度设置
