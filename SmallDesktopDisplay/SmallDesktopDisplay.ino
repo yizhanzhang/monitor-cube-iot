@@ -610,8 +610,6 @@ void setup()
   setSyncProvider(getNtpTime);
   setSyncInterval(300);
 
-  mcLcd.initTJpgDec();
-
   int CityCODE = 0;
   for (int cnum = 5; cnum > 0; cnum--)
   {
