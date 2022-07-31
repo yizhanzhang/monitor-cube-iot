@@ -12,7 +12,7 @@ private:
 
 public:
   void initLcd(TFT_eSPI *tft);
-  void setBrightness(TFT_eSPI *tft, int pwm)
+  void setBrightness(TFT_eSPI *tft, int pwm);
 };
 
 

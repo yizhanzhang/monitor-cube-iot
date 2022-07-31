@@ -24,10 +24,10 @@ void McLcd::initLcd(TFT_eSPI *tft)
   tft -> setRotation(LCD_Rotation);
   tft -> fillScreen(0x0000);
   tft -> setTextColor(TFT_BLACK, bgColor);
-}
+};
 
 void McLcd::setBrightness(TFT_eSPI *tft, int pwm) {
   Serial.println("McLcd: setBrightness");
   analogWrite(LCD_BL_PIN, 1023 - (pwm * 10));
   Serial.println("亮度调整为：" + LCD_BL_PWM);
-}
+};
