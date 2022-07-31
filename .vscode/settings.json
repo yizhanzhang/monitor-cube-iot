@@ -1,5 +1,13 @@
 {
   "cSpell.words": [
+    "EEPROM",
     "zhanspace"
-  ]
+  ],
+  "files.associations": {
+    "*.texturecube": "json",
+    "*.cjson": "jsonc",
+    "*.wxss": "css",
+    "*.wxs": "javascript",
+    "compare": "cpp"
+  }
 }

@@ -31,15 +31,13 @@
 #include "qr.h"
 #include "number.h"
 #include "weathernum.h"
+#include "mclcd.h"
 
 
 #define Version  "www.zhanspace.cn"
 
 //设置太空人图片是否使用
 #define imgAst_EN 1
-
-//设置开机加载图片是否使用
-#define imgAst_ENLoad 1
 
 //WiFiManager 参数
 WiFiManager wm; // global wm instance
@@ -132,9 +130,15 @@ int updateweater_time = 10;
 
 //----------------------------------------------------
 
+/*** Component objects ***/
+Number      dig;
+WeatherNum  wrat;
+McLcd       mcLcd;
+
 //LCD屏幕相关设置
-TFT_eSPI tft = TFT_eSPI();  // 引脚请自行配置tft_espi库中的 User_Setup.h文件
+TFT_eSPI tft = TFT_eSPI(); // 引脚请自行配置tft_espi库中的 User_Setup.h文件
 TFT_eSprite clk = TFT_eSprite(&tft);
+
 #define LCD_BL_PIN 5    //LCD背光引脚
 uint16_t bgColor = 0x0000;
 
@@ -149,11 +153,6 @@ int DHT_img_flag = 0;   //DHT传感器使用标志位
 
 time_t prevDisplay = 0;       //显示时间显示记录
 unsigned long weaterTime = 0; //天气更新时间记录
-
-
-/*** Component objects ***/
-Number      dig;
-WeatherNum  wrat;
 
 uint32_t targetTime = 0;
 String cityCode = "0";  //天气城市代码 
@@ -268,7 +267,7 @@ void loading(byte delayTime)//绘制进度条
   //  clk.fillRoundRect(3, 3, loadNum, 10, 5, 0xFFFF); //实心圆角矩形
   clk.setTextDatum(CC_DATUM);   //设置文本数据
   clk.setTextColor(TFT_ORANGE, 0x0000);
-  clk.drawString("Hello inventor!", 100, 30, 4);//Connecting to WiFi......
+  clk.drawString("Monitor Cube!", 100, 30, 4);//Connecting to WiFi......
   clk.setTextColor(TFT_WHITE, 0x0000);
   clk.drawRightString(Version, 200, 90, 1);
   clk.pushSprite(20, 130); //窗口位置
@@ -660,27 +659,12 @@ void saveParamCallback() {
 void setup()
 {
   Serial.begin(115200);
+  EEPROM.begin(1024);
   // WiFi.forceSleepWake();
   // wm.resetSettings();    //在初始化中使wifi重置，需重新配置WiFi
 
   /* 从eeprom读取存储的配置 */
-  // 背光亮度设置
-  EEPROM.begin(1024);
-  if (EEPROM.read(BL_addr) > 0 && EEPROM.read(BL_addr) < 100)
-    LCD_BL_PWM = EEPROM.read(BL_addr);
-  // 屏幕方向设置
-  if (EEPROM.read(Ro_addr) >= 0 && EEPROM.read(Ro_addr) <= 3)
-    LCD_Rotation = EEPROM.read(Ro_addr);
-  
-
-  pinMode(LCD_BL_PIN, OUTPUT);
-  analogWrite(LCD_BL_PIN, 1023 - (LCD_BL_PWM * 10));
-
-  tft.begin(); /* TFT init */
-  tft.invertDisplay(1);//反转所有显示颜色：1反转，0正常
-  tft.setRotation(LCD_Rotation);
-  tft.fillScreen(0x0000);
-  tft.setTextColor(TFT_BLACK, bgColor);
+  mcLcd.initLcd(&tft);
 
   targetTime = millis() + 1000;
   readwificonfig();//读取存储的wifi信息
@@ -1194,8 +1178,6 @@ void imgAnim()
 #endif
 
 //屏幕加载动画替换进度条
-
-#if imgAst_ENLoad
 void imgAnimLoad()
 {
   int x = 20, y = 35;
@@ -1326,7 +1308,6 @@ void imgAnimLoad()
       break;
   }
 }
-#endif
 
 
 
