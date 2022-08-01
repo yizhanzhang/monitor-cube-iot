@@ -83,7 +83,7 @@ WiFiManager wm; // global wm instance
 
 int AnimLoad = 0;           //开机图标显示指针记录
 int appearTimeLoad = 0;      //更新时间记录
-int Anim = 0;           //太空人图标显示指针记录
+int Anim = 0;        //太空人图标显示指针记录
 int appearTime = 0;      //太空人更新时间记录
 
 
@@ -559,12 +559,13 @@ void saveParamCallback() {
 
 void setup()
 {
+  // 打开调试串口以及EEPROM
   Serial.begin(115200);
   EEPROM.begin(1024);
 
   // 初始化LCD屏相关配置
   mcLcd.initLcd();
-  // 初始化jpg配置
+  // 初始化图片库能力
   mcLcd.initTJpgDec();
 
   /* 初始化wifi相关配置 */
@@ -572,7 +573,6 @@ void setup()
   mcWifi.readWifiConfig();
   // 按照配置尝试进行连接
   mcWifi.link();
-
 
   while (WiFi.status() != WL_CONNECTED)
   {
@@ -585,6 +585,7 @@ void setup()
       break;
     }
   }
+
   delay(10);
   while (loadNum < 194) //让动画走完
   {
