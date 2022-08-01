@@ -44,14 +44,13 @@
 #include "img/picture/donghua/ii35.h"
 
 #define ANIM_DELTA 30
-#define ANIM_LOOP_MIN 100
+#define ANIM_LOOP_MIN 200
 #define IMG_X 20
 #define IMG_Y 35
 #define DESC "powered by yizhanzhang"
 
 class McLoading {
   private:
-    int animCounter;
     int animLastTimeStamp;
     int animLoopCounter;
   public:
