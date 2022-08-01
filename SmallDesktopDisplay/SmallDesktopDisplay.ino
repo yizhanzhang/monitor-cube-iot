@@ -13,9 +13,7 @@
 #include "weathernum.h"
 #include "mclcd.h"
 #include "mcwifi.h"
-
-
-#define Version  "www.zhanspace.cn"
+#include "mcloading.h"
 
 //设置太空人图片是否使用
 #define imgAst_EN 1
@@ -44,43 +42,6 @@ WiFiManager wm; // global wm instance
 #include "img/picture/tkr/i8.h"
 #include "img/picture/tkr/i9.h"
 
-#include "img/picture/donghua/ii0.h"
-#include "img/picture/donghua/ii1.h"
-#include "img/picture/donghua/ii2.h"
-#include "img/picture/donghua/ii3.h"
-#include "img/picture/donghua/ii4.h"
-#include "img/picture/donghua/ii5.h"
-#include "img/picture/donghua/ii6.h"
-#include "img/picture/donghua/ii7.h"
-#include "img/picture/donghua/ii8.h"
-#include "img/picture/donghua/ii9.h"
-#include "img/picture/donghua/ii10.h"
-#include "img/picture/donghua/ii11.h"
-#include "img/picture/donghua/ii12.h"
-#include "img/picture/donghua/ii13.h"
-#include "img/picture/donghua/ii14.h"
-#include "img/picture/donghua/ii15.h"
-#include "img/picture/donghua/ii16.h"
-#include "img/picture/donghua/ii17.h"
-#include "img/picture/donghua/ii18.h"
-#include "img/picture/donghua/ii19.h"
-#include "img/picture/donghua/ii20.h"
-#include "img/picture/donghua/ii21.h"
-#include "img/picture/donghua/ii22.h"
-#include "img/picture/donghua/ii23.h"
-#include "img/picture/donghua/ii24.h"
-#include "img/picture/donghua/ii25.h"
-#include "img/picture/donghua/ii26.h"
-#include "img/picture/donghua/ii27.h"
-#include "img/picture/donghua/ii28.h"
-#include "img/picture/donghua/ii29.h"
-#include "img/picture/donghua/ii30.h"
-#include "img/picture/donghua/ii31.h"
-#include "img/picture/donghua/ii32.h"
-#include "img/picture/donghua/ii33.h"
-#include "img/picture/donghua/ii34.h"
-#include "img/picture/donghua/ii35.h"
-
 int AnimLoad = 0;           //开机图标显示指针记录
 int appearTimeLoad = 0;      //更新时间记录
 int Anim = 0;        //太空人图标显示指针记录
@@ -106,6 +67,7 @@ Number      dig;
 WeatherNum  wrat;
 McLcd       mcLcd;
 McWifi      mcWifi;
+McLoading   mcLoading;
 
 //LCD屏幕相关设置
 TFT_eSPI tft = TFT_eSPI();
@@ -163,30 +125,6 @@ void LCD_reflash(int en);
 /* *****************************************************************
     函数
  * *****************************************************************/
-
-//进度条函数
-byte loadNum = 6;           //原始默认为6
-void loading(byte delayTime)//绘制进度条
-{
-  clk.setColorDepth(8);
-
-  clk.createSprite(200, 130);//创建窗口
-  clk.fillSprite(0x0000);   //填充率
-
-  imgAnimLoad();
-
-  clk.setTextDatum(CC_DATUM);   //设置文本数据
-  clk.setTextColor(TFT_ORANGE, 0x0000);
-  clk.drawString("Monitor Cube!", 100, 30, 4);
-  clk.setTextColor(TFT_WHITE, 0x0000);
-  clk.drawRightString(Version, 200, 90, 1);
-  clk.pushSprite(20, 130); //窗口位置
-
-  clk.deleteSprite();
-
-  loadNum += 1;
-  delay(delayTime);
-}
 
 //湿度图标显示函数
 void humidityWin()
@@ -542,8 +480,6 @@ void saveParamCallback() {
   tft.setRotation(LCD_Rotation);
   tft.fillScreen(0x0000);
   Web_win();
-  loadNum--;
-  loading(1);
   if (EEPROM.read(BL_addr) != LCD_BL_PWM)
   {
     EEPROM.write(BL_addr, LCD_BL_PWM);
@@ -574,23 +510,14 @@ void setup()
   // 按照配置尝试进行连接
   mcWifi.link();
 
-  while (WiFi.status() != WL_CONNECTED)
-  {
-    loading(30);
-
-    if (loadNum >= 194)
-    {
-      Web_win();
-      Webconfig();
-      break;
-    }
+  // 显示开机画面，等待WIFI连接
+  bool isConnected = mcLoading.loading();
+  if (!isConnected) {
+    Web_win();
+    Webconfig();
   }
 
   delay(10);
-  while (loadNum < 194) //让动画走完
-  {
-    loading(1);
-  }
 
   if (WiFi.status() == WL_CONNECTED)
   {
@@ -1069,143 +996,6 @@ void imgAnim()
   }
 }
 #endif
-
-//屏幕加载动画替换进度条
-void imgAnimLoad()
-{
-  int x = 20, y = 35;
-  if (millis() - appearTimeLoad > 1) //x ms切换一次         // int appearTimeLoad = 0; 更新时间记录
-
-  {
-    AnimLoad++;                                           //int AnimLoad = 0;      开机图标显示指针记录
-    appearTimeLoad = millis();
-  }
-  if (AnimLoad == 36)
-    AnimLoad = 0;
-
-  switch (AnimLoad)
-  {
-    case 0:
-      TJpgDec.drawJpg(x, y, ii0, sizeof(ii0));
-      break;
-    case 1:
-      TJpgDec.drawJpg(x, y, ii1, sizeof(ii1));
-      break;
-    case 2:
-      TJpgDec.drawJpg(x, y, ii2, sizeof(ii2));
-      break;
-    case 3:
-      TJpgDec.drawJpg(x, y, ii3, sizeof(ii3));
-      break;
-    case 4:
-      TJpgDec.drawJpg(x, y, ii4, sizeof(ii4));
-      break;
-    case 5:
-      TJpgDec.drawJpg(x, y, ii5, sizeof(ii5));
-      break;
-    case 6:
-      TJpgDec.drawJpg(x, y, ii6, sizeof(ii6));
-      break;
-    case 7:
-      TJpgDec.drawJpg(x, y, ii7, sizeof(ii7));
-      break;
-    case 8:
-      TJpgDec.drawJpg(x, y, ii8, sizeof(ii8));
-      break;
-    case 9:
-      TJpgDec.drawJpg(x, y, ii9, sizeof(ii9));
-      break;
-    case 10:
-      TJpgDec.drawJpg(x, y, ii10, sizeof(ii10));
-      break;
-    case 11:
-      TJpgDec.drawJpg(x, y, ii11, sizeof(ii11));
-      break;
-    case 12:
-      TJpgDec.drawJpg(x, y, ii12, sizeof(ii12));
-      break;
-    case 13:
-      TJpgDec.drawJpg(x, y, ii13, sizeof(ii13));
-      break;
-    case 14:
-      TJpgDec.drawJpg(x, y, ii14, sizeof(ii14));
-      break;
-    case 15:
-      TJpgDec.drawJpg(x, y, ii15, sizeof(ii15));
-      break;
-    case 16:
-      TJpgDec.drawJpg(x, y, ii16, sizeof(ii16));
-      break;
-    case 17:
-      TJpgDec.drawJpg(x, y, ii17, sizeof(ii17));
-      break;
-    case 18:
-      TJpgDec.drawJpg(x, y, ii18, sizeof(ii18));
-      break;
-    case 19:
-      TJpgDec.drawJpg(x, y, ii19, sizeof(ii19));
-      break;
-    case 20:
-      TJpgDec.drawJpg(x, y, ii20, sizeof(ii20));
-      break;
-    case 21:
-      TJpgDec.drawJpg(x, y, ii21, sizeof(ii21));
-      break;
-    case 22:
-      TJpgDec.drawJpg(x, y, ii22, sizeof(ii22));
-      break;
-    case 23:
-      TJpgDec.drawJpg(x, y, ii23, sizeof(ii23));
-      break;
-    case 24:
-      TJpgDec.drawJpg(x, y, ii24, sizeof(ii24));
-      break;
-    case 25:
-      TJpgDec.drawJpg(x, y, ii25, sizeof(ii25));
-      break;
-    case 26:
-      TJpgDec.drawJpg(x, y, ii26, sizeof(ii26));
-      break;
-    case 27:
-      TJpgDec.drawJpg(x, y, ii27, sizeof(ii27));
-      break;
-    case 28:
-      TJpgDec.drawJpg(x, y, ii28, sizeof(ii28));
-      break;
-    case 29:
-      TJpgDec.drawJpg(x, y, ii29, sizeof(ii29));
-      break;
-    case 30:
-      TJpgDec.drawJpg(x, y, ii30, sizeof(ii30));
-      break;
-    case 31:
-      TJpgDec.drawJpg(x, y, ii31, sizeof(ii31));
-      break;
-    case 32:
-      TJpgDec.drawJpg(x, y, ii32, sizeof(ii32));
-      break;
-    case 33:
-      TJpgDec.drawJpg(x, y, ii33, sizeof(ii33));
-      break;
-    case 34:
-      TJpgDec.drawJpg(x, y, ii34, sizeof(ii34));
-      break;
-    case 35:
-      TJpgDec.drawJpg(x, y, ii35, sizeof(ii35));
-      break;
-      
-      /*
-      */
-    default:
-      Serial.println("显示AnimLoad错误");
-      break;
-  }
-}
-
-
-
-
-
 
 unsigned char Hour_sign   = 60;
 unsigned char Minute_sign = 60;

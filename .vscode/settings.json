@@ -1,9 +1,28 @@
 {
+  "cSpell.words": [
+    "EEPROM",
+    "millis",
+    "SSID",
+    "stapsw",
+    "stassid",
+    "wrat",
+    "yizhanzhang",
+    "zhanspace"
+  ],
   "files.associations": {
     "*.texturecube": "json",
     "*.cjson": "jsonc",
     "*.wxss": "css",
     "*.wxs": "javascript",
-    "cstddef": "cpp"
+    "compare": "cpp",
+    "ostream": "cpp",
+    "array": "cpp",
+    "deque": "cpp",
+    "list": "cpp",
+    "string": "cpp",
+    "unordered_map": "cpp",
+    "vector": "cpp",
+    "initializer_list": "cpp",
+    "*.tcc": "cpp"
   }
 }
