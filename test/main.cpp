@@ -20,7 +20,7 @@ PP pp;
 PP pp2 = PP();
 
 void test(const char *str1, const char *str2) {
-  WifiConfigType wc{"", ""};
+  WifiConfigType wc {"", ""};
   strcpy(wc.stassid, str1);
   cout << "123" << endl;
   cout << wc.stassid << endl;
