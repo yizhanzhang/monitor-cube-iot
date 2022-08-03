@@ -1,8 +1,12 @@
 #include "mcwifi.h"
 
-extern int LCD_BL_PWM;
 extern int wifi_addr;
 extern int BL_addr;
+extern int host_addr;
+
+extern int LCD_BL_PWM;
+extern String HOSTIP;
+
 extern TFT_eSprite clk;
 extern McLcd mcLcd;
 extern WiFiManager wm;
@@ -23,12 +27,29 @@ void saveParamCallback() {
   LCD_BL_PWM = getParam("LCDBL").toInt();
   String HOSTIP = getParam("HOSTIP");
 
+  // check and update LCD_BL_PWM
   if (EEPROM.read(BL_addr) != LCD_BL_PWM)
   {
     EEPROM.write(BL_addr, LCD_BL_PWM);
     EEPROM.commit();
     delay(5);
     mcLcd.setBrightness(LCD_BL_PWM);
+  }
+
+  // check and update HOSTIP
+  String oldHOSTIP="";
+  int oldLength = EEPROM.read(host_addr);
+  oldLength = oldLength > 15 ? 15 : oldLength;
+  for(int i = 0; i< oldLength; i++){
+    oldHOSTIP += char(EEPROM.read(host_addr + 1 + i));
+  }
+
+  if (oldHOSTIP != HOSTIP) {
+    int newLength = HOSTIP.length();
+    EEPROM.write(host_addr, newLength);
+    for(int i=0; i < newLength; i++){
+      EEPROM.write(host_addr + 1 + i, HOSTIP[i]);
+    }
   }
 }
 

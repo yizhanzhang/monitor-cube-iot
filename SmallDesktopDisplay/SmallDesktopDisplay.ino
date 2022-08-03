@@ -83,6 +83,7 @@ time_t prevDisplay = 0;       //显示时间显示记录
 unsigned long weaterTime = 0; //天气更新时间记录
 
 String cityCode = "0";  //天气城市代码 
+String HOSTIP = "";
 int tempnum = 0;   //温度百分比
 int huminum = 0;   //湿度百分比
 int tempcol = 0xffff;  //温度显示颜色
@@ -95,6 +96,7 @@ int Ro_addr = 2; //被写入数据的EEPROM地址编号  2 旋转方向
 int DHT_addr = 3;//3 DHT使能标志位
 int CC_addr = 10;//被写入数据的EEPROM地址编号  10城市
 int wifi_addr = 30; //被写入数据的EEPROM地址编号  20wifi-ssid-psw
+int host_addr = 130; //被写入数据的EEPROM主机IP地址
 
 
 //NTP服务器参数
