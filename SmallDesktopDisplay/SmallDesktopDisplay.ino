@@ -330,11 +330,11 @@ void setup()
   mcWifi.link();
 
   // 显示开机画面,等待WIFI连接,如果WIFI连接失败那么打开AP，进行手机配置
-  // bool isConnected = mcLoading.loading();
-  // if (!isConnected) {
+  bool isConnected = mcLoading.loading();
+  if (!isConnected) {
     mcWifi.showWifiAPTip();
     mcWifi.openWifiAP();
-  // }
+  }
 
   delay(10);
 
@@ -346,7 +346,6 @@ void setup()
     Serial.println(WiFi.psk().c_str());
     mcWifi.setWifiConfig(WiFi.SSID().c_str(), WiFi.psk().c_str());
     mcWifi.saveWifiConfig();
-    mcWifi.readWifiConfig();
   }
 
   Serial.print("本地IP： ");
@@ -815,7 +814,6 @@ String monthDay()
 }
 
 /*-------- NTP code ----------*/
-
 const int NTP_PACKET_SIZE = 48; // NTP时间在消息的前48字节中
 byte packetBuffer[NTP_PACKET_SIZE]; //buffer to hold incoming & outgoing packets
 
@@ -824,12 +822,7 @@ time_t getNtpTime()
   IPAddress ntpServerIP; // NTP server's ip address
 
   while (Udp.parsePacket() > 0) ; // discard any previously received packets
-  //Serial.println("Transmit NTP Request");
-  // get a random server from the pool
   WiFi.hostByName(ntpServerName, ntpServerIP);
-  //Serial.print(ntpServerName);
-  //Serial.print(": ");
-  //Serial.println(ntpServerIP);
   sendNTPpacket(ntpServerIP);
   uint32_t beginWait = millis();
   while (millis() - beginWait < 1500) {

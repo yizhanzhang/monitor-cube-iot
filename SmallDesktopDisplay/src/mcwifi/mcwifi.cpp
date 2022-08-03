@@ -43,7 +43,6 @@ void saveParamCallback() {
   for(int i = 0; i< oldLength; i++){
     oldHOSTIP += char(EEPROM.read(host_addr + 1 + i));
   }
-
   if (oldHOSTIP != HOSTIP) {
     int newLength = HOSTIP.length();
     EEPROM.write(host_addr, newLength);
