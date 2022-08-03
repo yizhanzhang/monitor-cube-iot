@@ -9,19 +9,14 @@
 #include <TJpg_Decoder.h>
 #include <EEPROM.h>
 #include <WiFiManager.h>
-#include "number.h"
 #include "weathernum.h"
-#include "mclcd.h"
-#include "mcwifi.h"
-#include "mcloading.h"
-
-//设置太空人图片是否使用
-#define imgAst_EN 1
+#include "src/number/number.h"
+#include "src/mclcd/mclcd.h"
+#include "src/mcwifi/mcwifi.h"
+#include "src/mcloading/mcloading.h"
 
 //WiFiManager 参数
 WiFiManager wm; // global wm instance
-// WiFiManagerParameter custom_field; // global param ( for non blocking w params )
-
 
 
 /* *****************************************************************
@@ -177,7 +172,7 @@ void Serial_set()
         LCD_BL_PWM = EEPROM.read(BL_addr);
         delay(5);
         SMOD = "";
-        mcLcd.setBrightness(&tft, LCD_BL_PWM);
+        mcLcd.setBrightness(LCD_BL_PWM);
       }
       else
         Serial.println("亮度调整错误，请输入0-100");
@@ -239,10 +234,6 @@ void Serial_set()
         // getCityWeater();
         // digitalClockDisplay(1);
         // scrollBanner();
-        // #if imgAst_EN
-        //   if(DHT_img_flag == 0)
-        //   imgAnim();
-        // #endif
 
 
         Serial.print("屏幕方向设置为：");
@@ -318,180 +309,6 @@ void Serial_set()
   }
 }
 
-//WEB配网LCD显示函数
-void Web_win()
-{
-  clk.setColorDepth(8);
-
-  clk.createSprite(200, 90);//创建窗口
-  clk.fillSprite(0x0000);   //填充率
-
-  clk.setTextDatum(CC_DATUM);   //设置文本数据
-  clk.setTextColor(TFT_GREEN, 0x0000);
-  clk.drawString("WiFi Connect Fail!", 100, 30, 2);
-  clk.drawString("SSID:", 45, 60, 2);
-  clk.setTextColor(TFT_YELLOW, 0x0000);
-  clk.drawString("AutoConnectAP", 125, 60, 2);
-  clk.pushSprite(20, 37); //窗口位置
-
-
-  clk.pushSprite(20, 37); //窗口位置
-  clk.deleteSprite();
-
-}
-
-//WEB配网函数
-void Webconfig()
-{
-  WiFi.mode(WIFI_STA); // explicitly set mode, esp defaults to STA+AP
-
-  delay(3000);
-  wm.resetSettings(); // wipe settings
-
-  // add a custom input field
-  int customFieldLength = 40;
-
-  // new (&custom_field) WiFiManagerParameter("customfieldid", "Custom Field Label", "Custom Field Value", customFieldLength,"placeholder=\"Custom Field Placeholder\"");
-
-  // test custom html input type(checkbox)
-  //  new (&custom_field) WiFiManagerParameter("customfieldid", "Custom Field Label", "Custom Field Value", customFieldLength,"placeholder=\"Custom Field Placeholder\" type=\"checkbox\""); // custom html type
-
-  // test custom html(radio)
-  // const char* custom_radio_str = "<br/><label for='customfieldid'>Custom Field Label</label><input type='radio' name='customfieldid' value='1' checked> One<br><input type='radio' name='customfieldid' value='2'> Two<br><input type='radio' name='customfieldid' value='3'> Three";
-  // new (&custom_field) WiFiManagerParameter(custom_radio_str); // custom html input
-
-  const char* set_rotation = "<br/><label for='set_rotation'>Set Rotation</label>\
-                              <input type='radio' name='set_rotation' value='0' checked> One<br>\
-                              <input type='radio' name='set_rotation' value='1'> Two<br>\
-                              <input type='radio' name='set_rotation' value='2'> Three<br>\
-//                              <input type='radio' name='set_rotation' value='3'> Four<br>\
-//                              <input type='radio' name='set_rotation' value='4'> Five<br>\
-                             <input type='radio' name='set_rotation' value='3'> Six<br>";
-  WiFiManagerParameter  custom_rot(set_rotation); // custom html input
-  WiFiManagerParameter  custom_bl("LCDBL", "LCD BackLight(1-100)", "8", 3);
-  WiFiManagerParameter  custom_weatertime("WeaterUpdateTime", "Weather Update Time(Min)", "10", 3);
-  WiFiManagerParameter  custom_cc("CityCode", "CityCode", "0", 9);
-  WiFiManagerParameter  p_lineBreak_notext("<p></p>");
-
-  // wm.addParameter(&p_lineBreak_notext);
-  // wm.addParameter(&custom_field);
-  wm.addParameter(&p_lineBreak_notext);
-  wm.addParameter(&custom_cc);
-  wm.addParameter(&p_lineBreak_notext);
-  wm.addParameter(&custom_bl);
-  wm.addParameter(&p_lineBreak_notext);
-  wm.addParameter(&custom_weatertime);
-  wm.addParameter(&p_lineBreak_notext);
-  wm.addParameter(&custom_rot);
-  wm.setSaveParamsCallback(saveParamCallback);
-
-  // custom menu via array or vector
-  //
-  // menu tokens, "wifi","wifinoscan","info","param","close","sep","erase","restart","exit" (sep is seperator) (if param is in menu, params will not show up in wifi page!)
-  // const char* menu[] = {"wifi","info","param","sep","restart","exit"};
-  // wm.setMenu(menu,6);
-  std::vector<const char *> menu = {"wifi", "restart"};
-  wm.setMenu(menu);
-
-  // set dark theme
-  wm.setClass("invert");
-
-  //set static ip
-  // wm.setSTAStaticIPConfig(IPAddress(10,0,1,99), IPAddress(10,0,1,1), IPAddress(255,255,255,0)); // set static ip,gw,sn
-  // wm.setShowStaticFields(true); // force show static ip fields
-  // wm.setShowDnsFields(true);    // force show dns field always
-
-  // wm.setConnectTimeout(20); // how long to try to connect for before continuing
-  //  wm.setConfigPortalTimeout(30); // auto close configportal after n seconds
-  // wm.setCaptivePortalEnable(false); // disable captive portal redirection
-  // wm.setAPClientCheck(true); // avoid timeout if client connected to softap
-
-  // wifi scan settings
-  // wm.setRemoveDuplicateAPs(false); // do not remove duplicate ap names (true)
-  wm.setMinimumSignalQuality(20);  // set min RSSI (percentage) to show in scans, null = 8%
-  // wm.setShowInfoErase(false);      // do not show erase button on info page
-  // wm.setScanDispPerc(true);       // show RSSI as percentage not graph icons
-
-  // wm.setBreakAfterConfig(true);   // always exit configportal even if wifi save fails
-
-  bool res;
-  // res = wm.autoConnect(); // auto generated AP name from chipid
-  res = wm.autoConnect("AutoConnectAP"); // anonymous ap
-  //  res = wm.autoConnect("AutoConnectAP","password"); // password protected ap
-
-  while (!res);
-}
-
-String getParam(String name) {
-  //read parameter from server, for customhmtl input
-  String value;
-  if (wm.server->hasArg(name)) {
-    value = wm.server->arg(name);
-  }
-  return value;
-}
-
-void saveParamCallback() {
-  int CCODE = 0, cc;
-
-  Serial.println("[CALLBACK] saveParamCallback fired");
-  // Serial.println("PARAM customfieldid = " + getParam("customfieldid"));
-  // Serial.println("PARAM CityCode = " + getParam("CityCode"));
-  // Serial.println("PARAM LCD BackLight = " + getParam("LCDBL"));
-  // Serial.println("PARAM WeaterUpdateTime = " + getParam("WeaterUpdateTime"));
-  // Serial.println("PARAM Rotation = " + getParam("set_rotation"));
-  // Serial.println("PARAM DHT11_en = " + getParam("DHT11_en"));
-
-  updateweater_time = getParam("WeaterUpdateTime").toInt();
-  cc =  getParam("CityCode").toInt();
-  LCD_Rotation = getParam("set_rotation").toInt();
-  LCD_BL_PWM = getParam("LCDBL").toInt();
-
-  //对获取的数据进行处理
-  //城市代码
-  Serial.print("CityCode = ");
-  Serial.println(cc);
-  if (cc >= 101000000 && cc <= 102000000 || cc == 0)
-  {
-    for (int cnum = 0; cnum < 5; cnum++)
-    {
-      EEPROM.write(CC_addr + cnum, cc % 100); //城市地址写入城市代码
-      EEPROM.commit();//保存更改的数据
-      cc = cc / 100;
-      delay(5);
-    }
-    for (int cnum = 5; cnum > 0; cnum--)
-    {
-      CCODE = CCODE * 100;
-      CCODE += EEPROM.read(CC_addr + cnum - 1);
-      delay(5);
-    }
-    cityCode = CCODE;
-  }
-  //屏幕方向
-  Serial.print("LCD_Rotation = ");
-  Serial.println(LCD_Rotation);
-  if (EEPROM.read(Ro_addr) != LCD_Rotation)
-  {
-    EEPROM.write(Ro_addr, LCD_Rotation);
-    EEPROM.commit();
-    delay(5);
-  }
-  tft.setRotation(LCD_Rotation);
-  tft.fillScreen(0x0000);
-  Web_win();
-  if (EEPROM.read(BL_addr) != LCD_BL_PWM)
-  {
-    EEPROM.write(BL_addr, LCD_BL_PWM);
-    EEPROM.commit();
-    delay(5);
-  }
-  //屏幕亮度
-  mcLcd.setBrightness(&tft, LCD_BL_PWM);
-  //天气更新时间
-  Serial.printf("天气更新时间调整为：");
-  Serial.println(updateweater_time);
-}
 
 void setup()
 {
@@ -510,12 +327,12 @@ void setup()
   // 按照配置尝试进行连接
   mcWifi.link();
 
-  // 显示开机画面，等待WIFI连接
-  bool isConnected = mcLoading.loading();
-  if (!isConnected) {
-    Web_win();
-    Webconfig();
-  }
+  // 显示开机画面,等待WIFI连接,如果WIFI连接失败那么打开AP，进行手机配置
+  // bool isConnected = mcLoading.loading();
+  // if (!isConnected) {
+    mcWifi.showWifiAPTip();
+    mcWifi.openWifiAP();
+  // }
 
   delay(10);
 
@@ -583,10 +400,8 @@ void LCD_reflash(int en)
   if (second() % 2 == 0 && prevTime == 0 || en == 1) {
     scrollBanner();
   }
-#if imgAst_EN
   if (DHT_img_flag == 0)
     imgAnim();
-#endif
 
 
   if (millis() - weaterTime > (60000 * updateweater_time) || en == 1 || UpdateWeater_en != 0) { //10分钟更新一次天气
@@ -877,7 +692,7 @@ void scrollBanner() {
 }
 
 
-#if imgAst_EN
+
 void imgAnim()
 {
   int x = 160, y = 160;                               //int Anim = 0;      太空人图标显示指针记录
@@ -922,80 +737,12 @@ void imgAnim()
     case 9:
       TJpgDec.drawJpg(x, y, i9, sizeof(i9));
       break;
-            /*
-    case 10:
-      TJpgDec.drawJpg(x, y, i10, sizeof(i10));
-      break;
-    case 11:
-      TJpgDec.drawJpg(x, y, i11, sizeof(i11));
-      break;
-    case 12:
-      TJpgDec.drawJpg(x, y, i12, sizeof(i12));
-      break;
-    case 13:
-      TJpgDec.drawJpg(x, y, i13, sizeof(i13));
-      break;
-    case 14:
-      TJpgDec.drawJpg(x, y, i14, sizeof(i14));
-      break;
-    case 15:
-      TJpgDec.drawJpg(x, y, i15, sizeof(i15));
-      break;
-    case 16:
-      TJpgDec.drawJpg(x, y, i16, sizeof(i16));
-      break;
-    case 17:
-      TJpgDec.drawJpg(x, y, i17, sizeof(i17));
-      break;
-    case 18:
-      TJpgDec.drawJpg(x, y, i18, sizeof(i18));
-      break;
-    case 19:
-      TJpgDec.drawJpg(x, y, i19, sizeof(i19));
-      break;
-    case 20:
-      TJpgDec.drawJpg(x, y, i20, sizeof(i20));
-      break;
-//    case 21:
-//      TJpgDec.drawJpg(x, y, i21, sizeof(i21));
-//      break;
-//    case 22:
-//      TJpgDec.drawJpg(x, y, i22, sizeof(i22));
-//      break;
-//    case 23:
-//      TJpgDec.drawJpg(x, y, i23, sizeof(i23));
-//      break;
-//    case 24:
-//      TJpgDec.drawJpg(x, y, i24, sizeof(i24));
-//      break;
-//    case 25:
-//      TJpgDec.drawJpg(x, y, i25, sizeof(i25));
-//      break;
-//    case 26:
-//      TJpgDec.drawJpg(x, y, i26, sizeof(i26));
-//      break;
-//    case 27:
-//      TJpgDec.drawJpg(x, y, i27, sizeof(i27));
-//      break;
-//    case 28:
-//      TJpgDec.drawJpg(x, y, i28, sizeof(i28));
-//      break;
-//    case 29:
-//      TJpgDec.drawJpg(x, y, i29, sizeof(i29));
-//      break;
-//    case 30:
-//      TJpgDec.drawJpg(x, y, i30, sizeof(i30));
-//      break;
-//    case 31:
-//      TJpgDec.drawJpg(x, y, i31, sizeof(i31));
-//      break;
-*/
     default:
       Serial.println("显示Anim错误");
       break;
   }
 }
-#endif
+
 
 unsigned char Hour_sign   = 60;
 unsigned char Minute_sign = 60;

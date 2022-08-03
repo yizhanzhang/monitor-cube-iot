@@ -12,7 +12,7 @@ class McLcd {
 
   public:
     void initLcd();
-    void setBrightness(TFT_eSPI *tft, int pwm);
+    void setBrightness(int pwm);
     void initTJpgDec();
 };
 

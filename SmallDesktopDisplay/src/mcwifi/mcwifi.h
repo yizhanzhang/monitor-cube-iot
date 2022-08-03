@@ -6,6 +6,11 @@
 #include <SPI.h>
 #include <EEPROM.h>
 #include <ESP8266WiFi.h>
+#include <TFT_eSPI.h>
+#include <WiFiManager.h>
+#include <string.h>
+
+#include "../mclcd/mclcd.h"
 
 struct WifiConfigType
 {
@@ -21,6 +26,8 @@ class McWifi {
     void saveWifiConfig();
     void deleteWifiConfig();
     void link();
+    void showWifiAPTip();
+    void openWifiAP();
   private:
     WifiConfigType wifiConf;
 };

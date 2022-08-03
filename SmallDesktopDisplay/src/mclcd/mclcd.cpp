@@ -35,7 +35,7 @@ void McLcd::initLcd() {
   tft.setTextColor(TFT_BLACK, bgColor);
 };
 
-void McLcd::setBrightness(TFT_eSPI *tft, int pwm) {
+void McLcd::setBrightness(int pwm) {
   Serial.println("McLcd: setBrightness");
   analogWrite(LCD_BL_PIN, 1023 - (pwm * 10));
   Serial.println("亮度调整为：" + LCD_BL_PWM);
