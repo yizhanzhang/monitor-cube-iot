@@ -96,7 +96,7 @@ int Ro_addr = 2; //被写入数据的EEPROM地址编号  2 旋转方向
 int DHT_addr = 3;//3 DHT使能标志位
 int CC_addr = 10;//被写入数据的EEPROM地址编号  10城市
 int wifi_addr = 30; //被写入数据的EEPROM地址编号  20wifi-ssid-psw
-int host_addr = 130; //被写入数据的EEPROM主机IP地址
+int host_addr = 150; //被写入数据的EEPROM主机IP地址
 
 
 //NTP服务器参数

@@ -54,7 +54,7 @@ void saveParamCallback() {
 }
 
 McWifi::McWifi(void) {
-  wifiConf = WifiConfigType{"", ""};
+  wifiConf = WifiConfigType{"", "", 0, ""};
 };
 
 void McWifi::setWifiConfig(const char *stassid, const char *stapsw) {
