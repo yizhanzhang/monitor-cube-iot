@@ -7,6 +7,6 @@ class McHost {
   private:
     void fetch();
     void draw();
-}
+};
 
 # endif
