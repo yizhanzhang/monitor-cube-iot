@@ -48,7 +48,7 @@ void McHost::draw() {
   clk.createSprite(columnInnerWidth, columnInnerHeight);
   clk.fillSprite(0x0000);
   int cpuY = hostInfo.cpuData * columnInnerHeight / 100;
-  clk.fillRoundRect(0, columnInnerHeight - cpuY, columnInnerWidth, cpuY, columnInnerRadius, TFT_GREEN);
+  clk.fillRoundRect(0, columnInnerHeight - cpuY, columnInnerWidth, cpuY, columnInnerRadius, TFT_CYAN);
   clk.pushSprite(146, 26);
   clk.deleteSprite();
   // fill mem percent
@@ -56,7 +56,7 @@ void McHost::draw() {
   clk.createSprite(columnInnerWidth, columnInnerHeight);
   clk.fillSprite(0x0000);
   int memY = hostInfo.memData * columnInnerHeight / 100;
-  clk.fillRoundRect(0, columnInnerHeight - memY, columnInnerWidth, memY, columnInnerRadius, TFT_CYAN);
+  clk.fillRoundRect(0, columnInnerHeight - memY, columnInnerWidth, memY, columnInnerRadius, TFT_GREEN);
   clk.pushSprite(196, 26);
   clk.deleteSprite();
 };
