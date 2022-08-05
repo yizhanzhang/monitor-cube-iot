@@ -6,6 +6,15 @@
 
 #include "../../img/host/i0.h"
 #include "../../img/host/i1.h"
+#include "../../img/astronaut/i0.h"
+#include "../../img/astronaut/i4.h"
+#include "../../img/astronaut/i8.h"
+#include "../../img/astronaut/i12.h"
+#include "../../img/astronaut/i16.h"
+#include "../../img/astronaut/i19.h"
+
+#define TIME_GAP_AST 100
+#define TIME_GAP_INFO 1000
 
 struct HostInfo {
   int cpuData;
@@ -17,8 +26,11 @@ struct HostInfo {
 class McHost {
   private:
     HostInfo hostInfo;
-    void fetch();
-    void draw();
+    int timestampAst;
+    int counterAst;
+    int timestampInfo;
+    void drawAst();
+    void drawInfo();
   public:
     McHost();
     void init();

@@ -181,7 +181,6 @@ void loop()
   mcHost.update();
   // LCD_reflash();
   // Serial_set();
-  delay(1000);
 }
 
 void LCD_reflash()
