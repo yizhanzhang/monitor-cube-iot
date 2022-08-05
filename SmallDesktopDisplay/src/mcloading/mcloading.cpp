@@ -57,7 +57,7 @@ void McLoading::draw() {
   clk.deleteSprite();
 };
 
-bool McLoading::loading() {
+void McLoading::loading() {
   // reset counter
   animLoopCounter = 0;
 
@@ -71,6 +71,4 @@ bool McLoading::loading() {
     draw();
     delay(ANIM_DELTA);
   }
-
-  return WiFi.status() != WL_CONNECTED;
 };

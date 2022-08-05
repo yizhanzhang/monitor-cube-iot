@@ -50,7 +50,8 @@ int DHT_img_flag = 0;   //DHT传感器使用标志位
 
 
 time_t prevDisplay = 0;       //显示时间显示记录
-unsigned long weaterTime = 0; //天气更新时间记录
+unsigned long weaterTime = 0; //天气信息更新时间记录
+unsigned long hostIpTime = 0; // 主机信息更新事件记录
 
 String cityCode = "0";  //天气城市代码 
 String HOSTIP = "";
@@ -167,10 +168,10 @@ void setup()
   mcWifi.readWifiConfig();
   // 按照配置尝试进行连接
   mcWifi.link();
-
-  // 显示开机画面,等待WIFI连接,如果WIFI连接失败那么打开AP，进行手机配置
-  bool isConnected = mcLoading.loading();
-  if (!isConnected) {
+  // 显示开机画面,等待WIFI连接
+  mcLoading.loading();
+  // 如果WIFI连接失败那么打开AP，进行手机配置
+  if (WiFi.status() != WL_CONNECTED) {
     mcWifi.openWifiAP();
   }
 
@@ -197,7 +198,7 @@ void loop()
 void LCD_reflash()
 {
   // 两秒钟更新一次
-  if (second() % 5 == 0) {
+  if (hostIpTime == 0 || millis() - hostIpTime > (60000)) {
     getHostInfo();
   }
 
@@ -217,6 +218,7 @@ void getHostInfo() {
   int httpCode = httpClient.GET();
   Serial.print("Send GET request to Info URL: ");
   Serial.println(URL);
+  hostIpTime = millis();
 
   //如果服务器响应OK则从服务器获取响应体信息并通过串口输出
   if (httpCode == HTTP_CODE_OK) {
@@ -251,6 +253,8 @@ void getCityWeater() {
   Serial.println("正在获取天气数据");
   Serial.println(URL);
 
+  weaterTime = millis();
+
   //如果服务器响应OK则从服务器获取响应体信息并通过串口输出
   if (httpCode == HTTP_CODE_OK) {
 
@@ -275,7 +279,6 @@ void getCityWeater() {
     weaterData(&jsonCityDZ, &jsonDataSK, &jsonFC);
     Serial.println("获取成功");
 
-    weaterTime = millis();
   } else {
     Serial.println("请求城市天气错误：");
     Serial.print(httpCode);

@@ -33,7 +33,6 @@ void McLcd::setBrightness(int pwm) {
   if (pwm <= 0 || pwm >= 100) {
     pwm = 8;
   }
-  Serial.println("McLcd: setBrightness");
   analogWrite(LCD_BL_PIN, 1023 - (pwm * 10));
   Serial.print("亮度调整为：");
   Serial.println(pwm);

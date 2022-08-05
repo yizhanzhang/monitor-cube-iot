@@ -30,7 +30,7 @@ void McWifi::readWifiConfig() {
   Serial.printf("SSID   :%s\r\n", wifiConf.stassid);
   Serial.printf("PSW    :%s\r\n", wifiConf.stapsw);
   Serial.printf("LCDBL  :%s\r\n", wifiConf.lcdBl);
-  Serial.printf("HOSTPI :%s\r\n", wifiConf.hostIp);
+  Serial.printf("HOSTIP :%s\r\n", wifiConf.hostIp);
 };
 
 // 将WIFI配置保存到EEPROM
@@ -110,7 +110,8 @@ void McWifi::openWifiAP() {
 
   bool res;
   res = wm.autoConnect("MonitorCubeAP"); // anonymous ap
-
+  Serial.print("res的值::::");
+  Serial.println(res);
   while (!res);
 }
 

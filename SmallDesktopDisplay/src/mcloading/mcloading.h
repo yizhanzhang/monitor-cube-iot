@@ -56,7 +56,7 @@ class McLoading {
   public:
     McLoading();
     void draw();
-    bool loading();
+    void loading();
 };
 
 #endif
