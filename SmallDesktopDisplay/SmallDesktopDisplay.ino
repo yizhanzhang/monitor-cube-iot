@@ -15,10 +15,6 @@
 #include "src/mcwifi/mcwifi.h"
 #include "src/mcloading/mcloading.h"
 
-//WiFiManager 参数
-WiFiManager wm; // global wm instance
-
-
 /* *****************************************************************
     字库、图片库
  * *****************************************************************/
@@ -26,6 +22,8 @@ WiFiManager wm; // global wm instance
 #include "img/temperature.h"
 #include "img/humidity.h"
 
+//WiFiManager 参数
+WiFiManager wm; // global wm instance
 
 /* *****************************************************************
     参数设置
@@ -42,19 +40,14 @@ McLoading   mcLoading;
 TFT_eSPI tft = TFT_eSPI();
 TFT_eSprite clk = TFT_eSprite(&tft);
 
+bool renderTest = true;
+
 uint16_t bgColor = 0x0000;
 
 //其余状态标志位
-int LCD_BL_PWM = 8;//屏幕亮度0-100，默认10
-int DHT_img_flag = 0;   //DHT传感器使用标志位
-
-
-time_t prevDisplay = 0;       //显示时间显示记录
 unsigned long weaterTime = 0; //天气信息更新时间记录
 unsigned long hostIpTime = 0; // 主机信息更新事件记录
 
-String cityCode = "0";  //天气城市代码 
-String HOSTIP = "";
 int tempnum = 0;   //温度百分比
 int huminum = 0;   //湿度百分比
 int tempcol = 0xffff;  //温度显示颜色
@@ -71,18 +64,11 @@ int host_addr = 150; //被写入数据的EEPROM主机IP地址
 
 
 //NTP服务器参数
-static const char ntpServerName[] = "ntp6.aliyun.com";
-const int timeZone = 8;     //东八区
 
 WiFiClient wificlient;
-float duty = 0;
-
 
 //函数声明
 void digitalClockDisplay(int reflash_en);
-void printDigits(int digits);
-String num2str(int digits);
-void sendNTPpacket(IPAddress &address);
 void LCD_reflash(int en);
 void getHostInfo();
 
@@ -158,27 +144,29 @@ void setup()
   Serial.begin(115200);
   EEPROM.begin(1024);
 
+  // 从EEPROM中恢复配置
+  mcWifi.readWifiConfig();
+
   // 初始化LCD屏相关配置
   mcLcd.initLcd();
   // 初始化图片库能力
   mcLcd.initTJpgDec();
 
-  /* 初始化wifi相关配置 */
-  // 从EEPROM中读取配置
-  mcWifi.readWifiConfig();
-  // 按照配置尝试进行连接
-  mcWifi.link();
-  // 显示开机画面,等待WIFI连接
-  mcLoading.loading();
-  // 如果WIFI连接失败那么打开AP，进行手机配置
-  if (WiFi.status() != WL_CONNECTED) {
-    mcWifi.openWifiAP();
-  }
+  if (!renderTest) {
+    // 按照配置尝试进行连接
+    mcWifi.link();
+    // 显示开机画面,等待WIFI连接
+    mcLoading.loading();
+    // 如果WIFI连接失败那么打开AP，进行手机配置
+    if (WiFi.status() != WL_CONNECTED) {
+      mcWifi.openWifiAP();
+    }
 
-  // 从WIFI实例中读取wifi配置写入EEPROM
-  if (WiFi.status() == WL_CONNECTED)
-  {
-    mcWifi.writeWifiConfig();
+    // 从WIFI实例中读取wifi配置写入EEPROM
+    if (WiFi.status() == WL_CONNECTED)
+    {
+      mcWifi.writeWifiConfig();
+    }
   }
 
   tft.fillScreen(TFT_BLACK);//清屏
@@ -191,8 +179,8 @@ void setup()
 
 void loop()
 {
-  LCD_reflash();
-  Serial_set();
+  // LCD_reflash();
+  // Serial_set();
 }
 
 void LCD_reflash()
