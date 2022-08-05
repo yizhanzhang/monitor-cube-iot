@@ -1,7 +1,6 @@
 #include "mclcd.h"
 
 extern TFT_eSPI tft;
-extern TFT_eSprite clk;
 
 extern int BL_addr;
 extern int Ro_addr;

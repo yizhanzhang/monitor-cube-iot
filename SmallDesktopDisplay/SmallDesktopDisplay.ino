@@ -14,6 +14,7 @@
 #include "src/mclcd/mclcd.h"
 #include "src/mcwifi/mcwifi.h"
 #include "src/mcloading/mcloading.h"
+#include "src/mchost/mchost.h"
 
 /* *****************************************************************
     字库、图片库
@@ -35,6 +36,7 @@ WeatherNum  wrat;
 McLcd       mcLcd;
 McWifi      mcWifi;
 McLoading   mcLoading;
+McHost      mcHost;
 
 //LCD屏幕相关设置
 TFT_eSPI tft = TFT_eSPI();
@@ -173,6 +175,8 @@ void setup()
 
   TJpgDec.drawJpg(15, 183, temperature, sizeof(temperature)); //温度图标
   TJpgDec.drawJpg(15, 213, humidity, sizeof(humidity)); //湿度图标
+
+  mcHost.draw();
 }
 
 
