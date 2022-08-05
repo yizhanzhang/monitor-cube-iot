@@ -10,48 +10,10 @@ extern String HOSTIP;
 extern TFT_eSprite clk;
 extern McLcd mcLcd;
 extern WiFiManager wm;
+extern McWifi mcWifi;
 
-String getParam(String name) {
-  String value;
-  if (wm.server->hasArg(name)) {
-    value = wm.server->arg(name);
-  }
-  return value;
-}
-
-void saveParamCallback() {
-  Serial.println("[CALLBACK] saveParamCallback fired");
-  Serial.println("PARAM LCD BackLight = " + getParam("LCDBL"));
-  Serial.println("PARAM 主机IP = " + getParam("HOSTIP"));
-
-  LCD_BL_PWM = getParam("LCDBL").toInt();
-  String HOSTIP = getParam("HOSTIP");
-
-  // check and update LCD_BL_PWM
-  if (EEPROM.read(BL_addr) != LCD_BL_PWM)
-  {
-    EEPROM.write(BL_addr, LCD_BL_PWM);
-    EEPROM.commit();
-    delay(5);
-    mcLcd.setBrightness(LCD_BL_PWM);
-  }
-
-  // check and update HOSTIP
-  String oldHOSTIP="";
-  int oldLength = EEPROM.read(host_addr);
-  oldLength = oldLength > 15 ? 15 : oldLength;
-  for(int i = 0; i< oldLength; i++){
-    oldHOSTIP += char(EEPROM.read(host_addr + 1 + i));
-  }
-
-  if (oldHOSTIP != HOSTIP) {
-    int newLength = HOSTIP.length();
-    EEPROM.write(host_addr, newLength);
-    for(int i=0; i < newLength; i++){
-      EEPROM.write(host_addr + 1 + i, HOSTIP[i]);
-    }
-  }
-}
+String getParam(String name);
+void saveParamCallback();
 
 McWifi::McWifi(void) {
   wifiConf = WifiConfigType{"", "", 0, ""};
@@ -151,4 +113,47 @@ void McWifi::openWifiAP() {
   res = wm.autoConnect("MonitorCubeAP"); // anonymous ap
 
   while (!res);
+}
+
+String getParam(String name) {
+  String value;
+  if (wm.server->hasArg(name)) {
+    value = wm.server->arg(name);
+  }
+  return value;
+}
+
+void saveParamCallback() {
+  mcWifi.wifiConf.lcdBl = getParam("LCDBL").toInt();
+  Serial.println("[CALLBACK] saveParamCallback fired");
+  Serial.println("PARAM LCD BackLight = " + getParam("LCDBL"));
+  Serial.println("PARAM 主机IP = " + getParam("HOSTIP"));
+
+  LCD_BL_PWM = getParam("LCDBL").toInt();
+  String HOSTIP = getParam("HOSTIP");
+
+  // check and update LCD_BL_PWM
+  if (EEPROM.read(BL_addr) != LCD_BL_PWM)
+  {
+    EEPROM.write(BL_addr, LCD_BL_PWM);
+    EEPROM.commit();
+    delay(5);
+    mcLcd.setBrightness(LCD_BL_PWM);
+  }
+
+  // check and update HOSTIP
+  String oldHOSTIP="";
+  int oldLength = EEPROM.read(host_addr);
+  oldLength = oldLength > 15 ? 15 : oldLength;
+  for(int i = 0; i< oldLength; i++){
+    oldHOSTIP += char(EEPROM.read(host_addr + 1 + i));
+  }
+
+  if (oldHOSTIP != HOSTIP) {
+    int newLength = HOSTIP.length();
+    EEPROM.write(host_addr, newLength);
+    for(int i=0; i < newLength; i++){
+      EEPROM.write(host_addr + 1 + i, HOSTIP[i]);
+    }
+  }
 }
