@@ -290,7 +290,7 @@ void Serial_set()
         Serial.println("重置WiFi设置中......");
         delay(10);
         wm.resetSettings();
-        mcWifi.deleteWifiConfig();
+        mcWifi.clearWifiConfig();
         delay(10);
         Serial.println("重置WiFi成功");
         SMOD = "";
@@ -332,7 +332,6 @@ void setup()
   // 显示开机画面,等待WIFI连接,如果WIFI连接失败那么打开AP，进行手机配置
   // bool isConnected = mcLoading.loading();
   // if (!isConnected) {
-    mcWifi.showWifiAPTip();
     mcWifi.openWifiAP();
   // }
 
@@ -344,8 +343,7 @@ void setup()
     Serial.println(WiFi.SSID().c_str());
     Serial.print("PSW:");
     Serial.println(WiFi.psk().c_str());
-    mcWifi.setWifiConfig(WiFi.SSID().c_str(), WiFi.psk().c_str());
-    mcWifi.saveWifiConfig();
+    mcWifi.writeWifiConfig();
     mcWifi.readWifiConfig();
   }
 

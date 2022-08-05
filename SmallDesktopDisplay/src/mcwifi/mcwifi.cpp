@@ -19,48 +19,47 @@ McWifi::McWifi(void) {
   wifiConf = WifiConfigType{"", "", 0, ""};
 };
 
-void McWifi::setWifiConfig(const char *stassid, const char *stapsw) {
-  strcpy(wifiConf.stassid, stassid); //名称复制
-  strcpy(wifiConf.stapsw, stapsw); //密码复制
-}
-
-//  从eeprom读取WiFi信息ssid，psw
+// 从EEPROM读取WiFi配置信息
 void McWifi::readWifiConfig() {
   uint8_t *p = (uint8_t*)(&wifiConf);
   for (int i = 0; i < sizeof(wifiConf); i++)
   {
-    *(p + i) = EEPROM.read(i + wifi_addr);
+    *(p + i) = EEPROM.read(wifi_addr + i);
   }
   Serial.printf("Read WiFi Config.....\r\n");
-  Serial.printf("SSID:%s\r\n", wifiConf.stassid);
-  Serial.printf("PSW:%s\r\n", wifiConf.stapsw);
+  Serial.printf("SSID   :%s\r\n", wifiConf.stassid);
+  Serial.printf("PSW    :%s\r\n", wifiConf.stapsw);
+  Serial.printf("LCDBL  :%s\r\n", wifiConf.lcdBl);
+  Serial.printf("HOSTPI :%s\r\n", wifiConf.hostIp);
 };
 
-//  wifi ssid，psw保存到eeprom
-void McWifi::saveWifiConfig()
+// 将WIFI配置保存到EEPROM
+void McWifi::writeWifiConfig()
 {
+  strcpy(wifiConf.stassid, WiFi.SSID().c_str());
+  strcpy(wifiConf.stapsw, WiFi.psk().c_str());
+
+  writeConfig2EEPROM();
+};
+
+// 清空WIFI配置并写入EEPROM
+void McWifi::clearWifiConfig()
+{
+  wifiConf = WifiConfigType{"", "", 0, ""};
+  writeConfig2EEPROM();
+};
+
+void McWifi::writeConfig2EEPROM() {
   uint8_t *p = (uint8_t*)(&wifiConf);
   for (int i = 0; i < sizeof(wifiConf); i++)
   {
-    EEPROM.write(i + wifi_addr, *(p + i)); //在闪存内模拟写入
+    EEPROM.write(wifi_addr + i, *(p + i)); //在闪存内模拟写入
   }
-  delay(10);
-  EEPROM.commit();//执行写入ROM
-  delay(10);
-};
 
-void McWifi::deleteWifiConfig()
-{
-  wifiConf = WifiConfigType{"", ""};
-  uint8_t *p = (uint8_t*)(&wifiConf);
-  for (int i = 0; i < sizeof(wifiConf); i++)
-  {
-    EEPROM.write(i + wifi_addr, *(p + i)); //在闪存内模拟写入
-  }
   delay(10);
-  EEPROM.commit();//执行写入ROM
+  EEPROM.commit();
   delay(10);
-};
+}
 
 void McWifi::link() {
   Serial.print("正在连接WIFI ");
@@ -68,7 +67,8 @@ void McWifi::link() {
   WiFi.begin(wifiConf.stassid, wifiConf.stapsw);
 };
 
-void McWifi::showWifiAPTip() {
+void McWifi::openWifiAP() {
+  /* draw AP Tip */
   clk.setColorDepth(8);
   clk.createSprite(200, 90);//创建窗口
   clk.fillSprite(0x0000);   //填充率
@@ -82,9 +82,8 @@ void McWifi::showWifiAPTip() {
   clk.pushSprite(20, 37); //窗口位置
 
   clk.deleteSprite();
-};
 
-void McWifi::openWifiAP() {
+  /* open */
   WiFi.mode(WIFI_STA); // explicitly set mode, esp defaults to STA+AP
 
   delay(3000);
@@ -124,36 +123,12 @@ String getParam(String name) {
 }
 
 void saveParamCallback() {
-  mcWifi.wifiConf.lcdBl = getParam("LCDBL").toInt();
   Serial.println("[CALLBACK] saveParamCallback fired");
   Serial.println("PARAM LCD BackLight = " + getParam("LCDBL"));
   Serial.println("PARAM 主机IP = " + getParam("HOSTIP"));
 
-  LCD_BL_PWM = getParam("LCDBL").toInt();
-  String HOSTIP = getParam("HOSTIP");
+  mcWifi.wifiConf.lcdBl = getParam("LCDBL").toInt();
+  strcpy(mcWifi.wifiConf.hostIp, getParam("HOSTIP").c_str());
 
-  // check and update LCD_BL_PWM
-  if (EEPROM.read(BL_addr) != LCD_BL_PWM)
-  {
-    EEPROM.write(BL_addr, LCD_BL_PWM);
-    EEPROM.commit();
-    delay(5);
-    mcLcd.setBrightness(LCD_BL_PWM);
-  }
-
-  // check and update HOSTIP
-  String oldHOSTIP="";
-  int oldLength = EEPROM.read(host_addr);
-  oldLength = oldLength > 15 ? 15 : oldLength;
-  for(int i = 0; i< oldLength; i++){
-    oldHOSTIP += char(EEPROM.read(host_addr + 1 + i));
-  }
-
-  if (oldHOSTIP != HOSTIP) {
-    int newLength = HOSTIP.length();
-    EEPROM.write(host_addr, newLength);
-    for(int i=0; i < newLength; i++){
-      EEPROM.write(host_addr + 1 + i, HOSTIP[i]);
-    }
-  }
+  mcLcd.setBrightness(mcWifi.wifiConf.lcdBl);
 }

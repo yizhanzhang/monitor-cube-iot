@@ -24,14 +24,13 @@ class McWifi {
   public:
     McWifi();
     WifiConfigType wifiConf;
-    void setWifiConfig(const char *stassid, const char *stapsw);
     void readWifiConfig();
-    void saveWifiConfig();
-    void deleteWifiConfig();
+    void writeWifiConfig();
+    void clearWifiConfig();
     void link();
-    void showWifiAPTip();
     void openWifiAP();
   private:
+    void writeConfig2EEPROM();
 };
 
 #endif
