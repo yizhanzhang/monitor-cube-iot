@@ -39,7 +39,7 @@ McLoading   mcLoading;
 McHost      mcHost;
 
 //LCD屏幕相关设置
-TFT_eSPI tft = TFT_eSPI();
+TFT_eSPI tft = TFT_eSPI(240, 240);
 TFT_eSprite clk = TFT_eSprite(&tft);
 
 bool renderTest = true;
@@ -171,20 +171,17 @@ void setup()
     }
   }
 
-  tft.fillScreen(TFT_BLACK);//清屏
-
-  TJpgDec.drawJpg(15, 183, temperature, sizeof(temperature)); //温度图标
-  TJpgDec.drawJpg(15, 213, humidity, sizeof(humidity)); //湿度图标
-
-  mcHost.draw();
+  mcHost.init();
 }
 
 
 
 void loop()
 {
+  mcHost.update();
   // LCD_reflash();
   // Serial_set();
+  delay(1000);
 }
 
 void LCD_reflash()
