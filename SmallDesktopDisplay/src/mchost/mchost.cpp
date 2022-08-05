@@ -26,7 +26,7 @@ void drawRoundRect(int32_t x, int32_t y, int32_t w, int32_t h, int32_t r, uint32
 };
 
 McHost::McHost(void) {
-  hostInfo = HostInfo{ 0, 0, 0.00, 0.00 };
+  hostInfo = HostInfo{ 0, 0, "00.00M", "00.00M" };
   timestampAst = 0;
   timestampInfo = 0;
 };
@@ -42,8 +42,11 @@ void McHost::init() {
   clk.pushSprite(140, 20);
   clk.pushSprite(190, 20);
   clk.deleteSprite();
-  TJpgDec.drawJpg(146, 210, icpu_20X20, sizeof(icpu_20X20)); //温度图标
-  TJpgDec.drawJpg(196, 210, iDiagram_20X20, sizeof(iDiagram_20X20)); //湿度图标
+  TJpgDec.drawJpg(146, 210, icpu_20X20, sizeof(icpu_20X20));
+  TJpgDec.drawJpg(196, 210, imem_20X20, sizeof(imem_20X20));
+  // net layout
+  TJpgDec.drawJpg(20, 35, idownload_20X20, sizeof(idownload_20X20));
+  TJpgDec.drawJpg(20, 70, iupload_20X20, sizeof(iupload_20X20));
 }
 
 void McHost::drawInfo() {
@@ -67,6 +70,27 @@ void McHost::drawInfo() {
   clk.fillRoundRect(0, columnInnerHeight - memY, columnInnerWidth, memY, columnInnerRadius, TFT_GREEN);
   clk.pushSprite(196, 26);
   clk.deleteSprite();
+  // write net upload
+  clk.setColorDepth(8);
+  clk.createSprite(90, 24);
+  clk.fillSprite(0x0000);
+  clk.setTextSize(2);
+  clk.setTextColor(TFT_VIOLET);
+  clk.setTextDatum(CC_DATUM);
+  clk.drawString(hostInfo.netUploadData, 45, 12);
+  clk.pushSprite(47, 68);
+  // write not download
+  clk.setColorDepth(8);
+  clk.createSprite(90, 24);
+  clk.fillSprite(0x0000);
+  clk.setTextSize(2);
+  clk.setTextColor(TFT_VIOLET);
+  clk.setTextDatum(CC_DATUM);
+  clk.drawString(hostInfo.netDownloadData, 45, 12);
+  clk.pushSprite(47, 33);
+
+  clk.deleteSprite();
+  // write net download
 };
 
 void McHost::drawAst() {

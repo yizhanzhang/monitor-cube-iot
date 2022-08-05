@@ -9,30 +9,16 @@
 #include <TJpg_Decoder.h>
 #include <EEPROM.h>
 #include <WiFiManager.h>
-#include "weathernum.h"
+#include "font/ZdyLwFont_20.h"
 #include "src/number/number.h"
 #include "src/mclcd/mclcd.h"
 #include "src/mcwifi/mcwifi.h"
 #include "src/mcloading/mcloading.h"
 #include "src/mchost/mchost.h"
 
-/* *****************************************************************
-    字库、图片库
- * *****************************************************************/
-#include "font/ZdyLwFont_20.h"
-#include "img/temperature.h"
-#include "img/humidity.h"
-
-//WiFiManager 参数
-WiFiManager wm; // global wm instance
-
-/* *****************************************************************
-    参数设置
- * *****************************************************************/
-
 /*** Component objects ***/
+WiFiManager wm;
 Number      dig;
-WeatherNum  wrat;
 McLcd       mcLcd;
 McWifi      mcWifi;
 McLoading   mcLoading;
@@ -384,10 +370,6 @@ void weaterData(String *cityDZ, String *dataSK, String *dataFC)
   scrollText[1] = "空气质量 " + aqiTxt;
   scrollText[2] = "风向 " + sk["WD"].as<String>() + sk["WS"].as<String>();
 
-  //scrollText[6] = atoi((sk["weathercode"].as<String>()).substring(1,3).c_str()) ;
-
-  //天气图标
-  wrat.printfweather(170, 15, atoi((sk["weathercode"].as<String>()).substring(1, 3).c_str()));
 
 
   //左上角滚动字幕

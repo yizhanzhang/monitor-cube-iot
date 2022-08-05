@@ -6,6 +6,8 @@
 
 #include "../../img/host/i0.h"
 #include "../../img/host/i1.h"
+#include "../../img/host/download.h"
+#include "../../img/host/upload.h"
 #include "../../img/astronaut/i0.h"
 #include "../../img/astronaut/i4.h"
 #include "../../img/astronaut/i8.h"
@@ -19,8 +21,8 @@
 struct HostInfo {
   int cpuData;
   int memData;
-  float netUploadData;
-  float netDownloadData;
+  String netUploadData;
+  String netDownloadData;
 };
 
 class McHost {
