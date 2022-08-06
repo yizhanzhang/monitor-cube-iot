@@ -43,25 +43,15 @@ void Serial_set() {
       incomingByte += char(Serial.read());//读取单个字符值，转换为字符，并按顺序一个个赋值给incomingByte
       delay(2);//不能省略，因为读取缓冲区数据需要时间
     }
-
     SMOD = incomingByte;
+    SMOD.trim();
     if (SMOD == "0x05") {
       Serial.println("重置WiFi设置中......");
-      wm.resetSettings();
       mcWifi.clearWifiConfig();
+      wm.resetSettings();
       delay(10);
       Serial.println("重置WiFi成功");
       SMOD = "";
-      ESP.restart();
-    } else {
-      Serial.println("");
-      Serial.println("请输入需要修改的代码：");
-      Serial.println("亮度设置输入        0x01");
-      Serial.println("地址设置输入        0x02");
-      Serial.println("屏幕方向设置输入    0x03");
-      Serial.println("更改天气更新时间    0x04");
-      Serial.println("重置WiFi(会重启)    0x05");
-      Serial.println("");
     }
   }
 }
@@ -104,5 +94,5 @@ void setup()
 void loop()
 {
   mcHost.update();
-  // Serial_set();
+  Serial_set();
 }

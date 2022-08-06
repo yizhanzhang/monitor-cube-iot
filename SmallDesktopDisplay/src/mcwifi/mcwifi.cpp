@@ -2,9 +2,6 @@
 
 extern int wifi_addr;
 
-extern int LCD_BL_PWM;
-extern String HOSTIP;
-
 extern TFT_eSprite clk;
 extern McLcd mcLcd;
 extern WiFiManager wm;

@@ -17,7 +17,7 @@ struct WifiConfigType
   char stassid[32]; //  定义配网得到的WIFI名长度(最大32字节)
   char stapsw[64];  //  定义配网得到的WIFI密码长度(最大64字节)
   int  lcdBl;       // 背光强度设定
-  char hostIp[15];  // 主机IP地址
+  char hostIp[20];  // 主机IP地址
 };
 
 class McWifi {
