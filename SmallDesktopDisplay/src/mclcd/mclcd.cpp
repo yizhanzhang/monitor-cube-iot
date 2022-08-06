@@ -2,8 +2,6 @@
 
 extern TFT_eSPI tft;
 
-extern int BL_addr;
-extern int Ro_addr;
 extern int LCD_BL_PWM;
 extern uint16_t bgColor;
 

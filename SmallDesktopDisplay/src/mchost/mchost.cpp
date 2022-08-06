@@ -3,6 +3,9 @@
 extern TFT_eSprite clk;
 extern TFT_eSPI tft;
 
+WiFiClient wificlient;
+StaticJsonDocument<200> doc;
+
 const int columnOuterWidth = 30;
 const int columnOuterHeight = 180;
 const int columnOuterRadius =  10;
@@ -47,13 +50,53 @@ void McHost::init() {
   // net layout
   TJpgDec.drawJpg(20, 35, idownload_20X20, sizeof(idownload_20X20));
   TJpgDec.drawJpg(20, 70, iupload_20X20, sizeof(iupload_20X20));
-}
+};
+
+void McHost::drawAst() {
+  TJpgDec.drawJpg(20, 110, astImgArr[counterAst], astImgSizeArr[counterAst]);
+  counterAst = (counterAst + 1) % 6;
+};
+
+void McHost::fetchInfo() {
+  /* fetch info */
+  String URL = "http://192.168.31.56:3000/info";
+  //创建 HTTPClient 对象
+  HTTPClient httpClient;
+  httpClient.begin(wificlient, URL);
+  //启动连接并发送HTTP请求
+  int httpCode = httpClient.GET();
+  Serial.print("Send GET request to Info URL: ");
+  Serial.println(URL);
+  //如果服务器响应OK则从服务器获取响应体信息并通过串口输出
+  String str = "";
+  if (httpCode == HTTP_CODE_OK) {
+    str = httpClient.getString();
+    Serial.println("获取主机信息成功");
+    Serial.println(str);
+  } else {
+    Serial.println("请求主机信息失败");
+    Serial.println(httpCode);
+  }
+  //关闭ESP8266与服务器连接
+  httpClient.end();
+
+  /* 解析数据 */
+  DeserializationError error = deserializeJson(doc, str);
+  //检查反序列化是否成功
+  if (!error) {
+    hostInfo.cpuData = doc["cpuData"];
+    hostInfo.memData = doc["memData"];
+    const char *netUploadData = doc["downloadData"];
+    hostInfo.netUploadData = netUploadData;
+    const char *netDownloadData = doc["uploadData"];
+    hostInfo.netDownloadData = netDownloadData;
+  } else {
+    hostInfo.cpuData = hostInfo.memData = 0
+    hostInfo.netUploadData = hostInfo.netDownloadData = "00.00M"
+  }
+};
 
 void McHost::drawInfo() {
-  // mock fetch data
-  hostInfo.cpuData = (hostInfo.cpuData + 1) % 100;
-  hostInfo.memData = (hostInfo.memData + 1) % 100;
-
   // fill cpu percent
   clk.setColorDepth(8);
   clk.createSprite(columnInnerWidth, columnInnerHeight);
@@ -93,10 +136,10 @@ void McHost::drawInfo() {
   // write net download
 };
 
-void McHost::drawAst() {
-  TJpgDec.drawJpg(20, 110, astImgArr[counterAst], astImgSizeArr[counterAst]);
-  counterAst = (counterAst + 1) % 6;
-};
+void McHost::updateInfo() {
+  fetchInfo();
+  drawInfo();
+}
 
 
 void McHost::update() {
@@ -110,7 +153,7 @@ void McHost::update() {
   }
 
   if (nowStamp - timestampInfo > TIME_GAP_INFO) {
-    drawInfo();
+    updateInfo();
     timestampInfo = millis();
   } else if (nowStamp < timestampInfo) { // 兼容milles极限
     timestampInfo = millis();

@@ -53,9 +53,10 @@ class McLoading {
   private:
     int animLastTimeStamp;
     int animLoopCounter;
+    void drawText();
+    void drawAnim();
   public:
     McLoading();
-    void draw();
     void loading();
 };
 

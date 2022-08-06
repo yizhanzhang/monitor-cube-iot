@@ -1,8 +1,6 @@
 #include "mcwifi.h"
 
 extern int wifi_addr;
-extern int BL_addr;
-extern int host_addr;
 
 extern int LCD_BL_PWM;
 extern String HOSTIP;

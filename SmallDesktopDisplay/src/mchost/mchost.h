@@ -1,8 +1,10 @@
 #ifndef MC_HOST_H
 #define MC_HOST_H
 
+#include <ArduinoJson.h>
 #include <TFT_eSPI.h>
 #include <TJpg_Decoder.h>
+#include <ESP8266HTTPClient.h>
 
 #include "../../img/host/i0.h"
 #include "../../img/host/i1.h"
@@ -33,6 +35,8 @@ class McHost {
     int timestampInfo;
     void drawAst();
     void drawInfo();
+    void fetchInfo();
+    void updateInfo();
   public:
     McHost();
     void init();
