@@ -68,6 +68,10 @@ void McLoading::loading() {
     delay(ANIM_DELTA);
   }
 
+  if (animLoopCounter >= ANIM_LOOP_MIN) {
+    Serial.println("WIFI链接超时");
+  }
+
   // 至少循环ANIM_LOOP_MIN次
   while (animLoopCounter < ANIM_LOOP_MIN) {
     drawAnim();

@@ -44,7 +44,7 @@
 #include "../../img/loading/ii35.h"
 
 #define ANIM_DELTA 30
-#define ANIM_LOOP_MIN 200
+#define ANIM_LOOP_MIN 300
 #define IMG_X 20
 #define IMG_Y 35
 #define DESC "powered by yizhanzhang"

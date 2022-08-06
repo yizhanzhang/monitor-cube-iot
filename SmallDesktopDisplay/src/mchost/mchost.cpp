@@ -2,6 +2,7 @@
 
 extern TFT_eSprite clk;
 extern TFT_eSPI tft;
+extern McWifi mcWifi;
 
 WiFiClient wificlient;
 StaticJsonDocument<200> doc;
@@ -15,11 +16,11 @@ const int columnInnerHeight = 168;
 const int columnInnerRadius =  4;
 
 const uint8_t *astImgArr[] = {
-  ast0, ast4, ast8, ast12, ast16, ast19,
+  ast0
 };
 
 const uint32_t astImgSizeArr[] = {
-  sizeof(ast0), sizeof(ast4), sizeof(ast8), sizeof(ast12), sizeof(ast16), sizeof(ast19),
+  sizeof(ast0)
 };
 
 void drawRoundRect(int32_t x, int32_t y, int32_t w, int32_t h, int32_t r, uint32_t color, int32_t thickness) {
@@ -50,6 +51,8 @@ void McHost::init() {
   // net layout
   TJpgDec.drawJpg(20, 35, idownload_20X20, sizeof(idownload_20X20));
   TJpgDec.drawJpg(20, 70, iupload_20X20, sizeof(iupload_20X20));
+  // drawAst
+  drawAst();
 };
 
 void McHost::drawAst() {
@@ -59,7 +62,8 @@ void McHost::drawAst() {
 
 void McHost::fetchInfo() {
   /* fetch info */
-  String URL = "http://192.168.31.56:3000/info";
+  String hostIp = mcWifi.wifiConf.hostIp;
+  String URL = "http://" + hostIp + "/info";
   //创建 HTTPClient 对象
   HTTPClient httpClient;
   httpClient.begin(wificlient, URL);
@@ -91,8 +95,8 @@ void McHost::fetchInfo() {
     const char *netDownloadData = doc["uploadData"];
     hostInfo.netDownloadData = netDownloadData;
   } else {
-    hostInfo.cpuData = hostInfo.memData = 0;
-    hostInfo.netUploadData = hostInfo.netDownloadData = "00.00M";
+    hostInfo.cpuData = hostInfo.memData = 0
+    hostInfo.netUploadData = hostInfo.netDownloadData = ""
   }
 };
 
@@ -101,16 +105,20 @@ void McHost::drawInfo() {
   clk.setColorDepth(8);
   clk.createSprite(columnInnerWidth, columnInnerHeight);
   clk.fillSprite(0x0000);
-  int cpuY = hostInfo.cpuData * columnInnerHeight / 100;
-  clk.fillRoundRect(0, columnInnerHeight - cpuY, columnInnerWidth, cpuY, columnInnerRadius, TFT_CYAN);
+  if (hostInfo.cpuData > 0) {
+    int cpuY = hostInfo.cpuData * columnInnerHeight / 100;
+    clk.fillRoundRect(0, columnInnerHeight - cpuY, columnInnerWidth, cpuY, columnInnerRadius, TFT_CYAN);
+  }
   clk.pushSprite(146, 26);
   clk.deleteSprite();
   // fill mem percent
   clk.setColorDepth(8);
   clk.createSprite(columnInnerWidth, columnInnerHeight);
   clk.fillSprite(0x0000);
-  int memY = hostInfo.memData * columnInnerHeight / 100;
-  clk.fillRoundRect(0, columnInnerHeight - memY, columnInnerWidth, memY, columnInnerRadius, TFT_GREEN);
+  if (hostInfo.memData) {
+    int memY = hostInfo.memData * columnInnerHeight / 100;
+    clk.fillRoundRect(0, columnInnerHeight - memY, columnInnerWidth, memY, columnInnerRadius, TFT_GREEN);
+  }
   clk.pushSprite(196, 26);
   clk.deleteSprite();
   // write net upload
@@ -144,13 +152,6 @@ void McHost::updateInfo() {
 
 void McHost::update() {
   int nowStamp = millis();
-
-  if (nowStamp - timestampAst > TIME_GAP_AST) {
-    drawAst();
-    timestampAst = millis();
-  } else if (nowStamp < timestampAst) { // 兼容milles极限
-    timestampAst = millis();
-  }
 
   if (nowStamp - timestampInfo > TIME_GAP_INFO) {
     updateInfo();
