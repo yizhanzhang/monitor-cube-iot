@@ -1,11 +1,6 @@
 #include "mcwifi.h"
 
 extern int wifi_addr;
-extern int BL_addr;
-extern int host_addr;
-
-extern int LCD_BL_PWM;
-extern String HOSTIP;
 
 extern TFT_eSprite clk;
 extern McLcd mcLcd;
@@ -17,7 +12,6 @@ void saveParamCallback();
 
 McWifi::McWifi(void) {
   wifiConf = WifiConfigType{"", "", 0, ""};
-  readWifiConfig();
 };
 
 // 从EEPROM读取WiFi配置信息
@@ -27,11 +21,15 @@ void McWifi::readWifiConfig() {
   {
     *(p + i) = EEPROM.read(wifi_addr + i);
   }
-  Serial.printf("Read WiFi Config.....\r\n");
-  Serial.printf("SSID   :%s\r\n", wifiConf.stassid);
-  Serial.printf("PSW    :%s\r\n", wifiConf.stapsw);
-  Serial.printf("LCDBL  :%s\r\n", wifiConf.lcdBl);
-  Serial.printf("HOSTPI :%s\r\n", wifiConf.hostIp);
+  Serial.println("Read WiFi Config.....");
+  Serial.print("SSID   :");
+  Serial.println(wifiConf.stassid);
+  Serial.print("PSW    :");
+  Serial.println(wifiConf.stapsw);
+  Serial.print("LCDBL  :");
+  Serial.println(wifiConf.lcdBl);
+  Serial.print("HOSTIP :");
+  Serial.println(wifiConf.hostIp);
 };
 
 // 将WIFI配置保存到EEPROM
@@ -97,7 +95,7 @@ void McWifi::openWifiAP() {
 
   /* 自定义展示数据 */
   WiFiManagerParameter  custom_bl("LCDBL", "背光强度(1-100)", "8", 3);
-  WiFiManagerParameter  custom_host("HOSTIP", "主机IP(IPV4)", "", 15);
+  WiFiManagerParameter  custom_host("HOSTIP", "主机IP(IPV4)", "", 20);
   WiFiManagerParameter  p_lineBreak("<p></p>");
   wm.addParameter(&p_lineBreak);
   wm.addParameter(&custom_bl);
@@ -111,7 +109,8 @@ void McWifi::openWifiAP() {
 
   bool res;
   res = wm.autoConnect("MonitorCubeAP"); // anonymous ap
-
+  Serial.print("res的值::::");
+  Serial.println(res);
   while (!res);
 }
 
