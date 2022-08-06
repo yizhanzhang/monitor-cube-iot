@@ -24,11 +24,15 @@ void McWifi::readWifiConfig() {
   {
     *(p + i) = EEPROM.read(wifi_addr + i);
   }
-  Serial.printf("Read WiFi Config.....\r\n");
-  Serial.printf("SSID   :%s\r\n", wifiConf.stassid);
-  Serial.printf("PSW    :%s\r\n", wifiConf.stapsw);
-  Serial.printf("LCDBL  :%s\r\n", wifiConf.lcdBl);
-  Serial.printf("HOSTIP :%s\r\n", wifiConf.hostIp);
+  Serial.println("Read WiFi Config.....");
+  Serial.print("SSID   :");
+  Serial.println(wifiConf.stassid);
+  Serial.print("PSW    :");
+  Serial.println(wifiConf.stapsw);
+  Serial.print("LCDBL  :");
+  Serial.println(wifiConf.lcdBl);
+  Serial.print("HOSTIP :");
+  Serial.println(wifiConf.hostIp);
 };
 
 // 将WIFI配置保存到EEPROM
