@@ -129,7 +129,7 @@ void McHost::drawInfo() {
   clk.setTextColor(TFT_ORANGE);
   clk.setTextDatum(CC_DATUM);
   clk.drawString(hostInfo.netUploadData, 45, 12);
-  clk.pushSprite(47, 68);
+  clk.pushSprite(47, 69);
   // write not download
   clk.setColorDepth(8);
   clk.createSprite(90, 24);
@@ -138,7 +138,7 @@ void McHost::drawInfo() {
   clk.setTextColor(TFT_ORANGE);
   clk.setTextDatum(CC_DATUM);
   clk.drawString(hostInfo.netDownloadData, 45, 12);
-  clk.pushSprite(47, 33);
+  clk.pushSprite(47, 34);
 
   clk.deleteSprite();
   // write net download
