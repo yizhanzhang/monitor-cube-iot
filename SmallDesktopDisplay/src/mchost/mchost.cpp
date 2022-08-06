@@ -49,8 +49,8 @@ void McHost::init() {
   TJpgDec.drawJpg(146, 210, icpu_20X20, sizeof(icpu_20X20));
   TJpgDec.drawJpg(196, 210, imem_20X20, sizeof(imem_20X20));
   // net layout
-  TJpgDec.drawJpg(20, 35, idownload_20X20, sizeof(idownload_20X20));
-  TJpgDec.drawJpg(20, 70, iupload_20X20, sizeof(iupload_20X20));
+  TJpgDec.drawJpg(20, 35, iupload_20X20, sizeof(iupload_20X20));
+  TJpgDec.drawJpg(20, 70, idownload_20X20, sizeof(idownload_20X20));
   // drawAst
   drawAst();
 };
@@ -126,7 +126,7 @@ void McHost::drawInfo() {
   clk.createSprite(90, 24);
   clk.fillSprite(0x0000);
   clk.setTextSize(2);
-  clk.setTextColor(TFT_VIOLET);
+  clk.setTextColor(TFT_ORANGE);
   clk.setTextDatum(CC_DATUM);
   clk.drawString(hostInfo.netUploadData, 45, 12);
   clk.pushSprite(47, 68);
@@ -135,7 +135,7 @@ void McHost::drawInfo() {
   clk.createSprite(90, 24);
   clk.fillSprite(0x0000);
   clk.setTextSize(2);
-  clk.setTextColor(TFT_VIOLET);
+  clk.setTextColor(TFT_ORANGE);
   clk.setTextDatum(CC_DATUM);
   clk.drawString(hostInfo.netDownloadData, 45, 12);
   clk.pushSprite(47, 33);
