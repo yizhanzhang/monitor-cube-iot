@@ -95,7 +95,7 @@ void McWifi::openWifiAP() {
 
   /* 自定义展示数据 */
   WiFiManagerParameter  custom_bl("LCDBL", "背光强度(1-100)", "8", 3);
-  WiFiManagerParameter  custom_host("HOSTIP", "主机IP(IPV4)", "", 15);
+  WiFiManagerParameter  custom_host("HOSTIP", "主机IP(IPV4)", "", 20);
   WiFiManagerParameter  p_lineBreak("<p></p>");
   wm.addParameter(&p_lineBreak);
   wm.addParameter(&custom_bl);
