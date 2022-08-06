@@ -95,8 +95,8 @@ void McHost::fetchInfo() {
     const char *netDownloadData = doc["uploadData"];
     hostInfo.netDownloadData = netDownloadData;
   } else {
-    hostInfo.cpuData = hostInfo.memData = 0
-    hostInfo.netUploadData = hostInfo.netDownloadData = ""
+    hostInfo.cpuData = hostInfo.memData = 0;
+    hostInfo.netUploadData = hostInfo.netDownloadData = "";
   }
 };
 
