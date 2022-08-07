@@ -22,15 +22,12 @@ void McLcd::initLcd() {
 };
 
 void McLcd::setBrightness(int pwm) {
-  // Serial.print("in setBrightness:");
-  // Serial.print("亮度will调整为：");
-  // Serial.println(pwm);
-  // if (pwm <= 0 || pwm >= 100) {
-  //   pwm = 8;
-  // }
+  if (pwm <= 0 || pwm >= 100) {
+    pwm = 8;
+  }
   analogWrite(LCD_BL_PIN, (1023 - (pwm * 10)) / 4);
-  // Serial.print("亮度调整为：");
-  // Serial.println(pwm);
+  Serial.print("亮度调整为：");
+  Serial.println(pwm);
 };
 
 void McLcd::initTJpgDec() {

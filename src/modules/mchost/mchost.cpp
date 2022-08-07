@@ -62,8 +62,10 @@ void McHost::drawAst() {
 
 void McHost::fetchInfo() {
   /* fetch info */
-  String hostIp = mcWifi.wifiConf.hostIp;
-  String URL = "http://" + hostIp + "/info";
+  String URL = mcWifi.wifiConf.hostIp;
+  if (!hostIp.startsWith("http://") && !hostIp.startsWith("https://") {
+    URL = "http://" + URL
+  }
   //创建 HTTPClient 对象
   HTTPClient httpClient;
   httpClient.begin(wificlient, URL);
