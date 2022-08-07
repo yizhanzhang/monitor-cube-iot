@@ -11,7 +11,5 @@ void McWallpaper::init() {
 void McWallpaper::draw() {
   if (hasDraw) return void();
   hasDraw = true;
-  TJpgDec.setJpgScale(2);
   TJpgDec.drawJpg(0, 0, windowsxp, sizeof(windowsxp));
-  TJpgDec.setJpgScale(1);
 }

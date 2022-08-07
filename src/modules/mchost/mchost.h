@@ -13,7 +13,6 @@
 #include "../../img/host/upload.h"
 #include "../../img/astronaut/i0.h"
 
-#define TIME_GAP_AST 100
 #define TIME_GAP_INFO 1000
 
 struct HostInfo {
@@ -26,8 +25,6 @@ struct HostInfo {
 class McHost {
   private:
     HostInfo hostInfo;
-    int timestampAst;
-    int counterAst;
     int timestampInfo;
     void drawAst();
     void drawInfo();

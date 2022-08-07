@@ -22,16 +22,20 @@ McLoading::McLoading(void) {
 };
 
 void McLoading::drawText() {
-  // 文字部分
   clk.setColorDepth(8);
-  clk.createSprite(200, 130);//创建窗口
-  clk.fillSprite(0x0000);   //填充率
-  clk.setTextDatum(CC_DATUM);   //设置文本数据
+
+  clk.createSprite(200, 40);
+  clk.setTextDatum(CC_DATUM);
   clk.setTextColor(TFT_ORANGE, 0x0000);
-  clk.drawString("Monitor Cube!", 100, 30, 4);
+  clk.drawString("Monitor Cube!", 100, 15, 4);
+  clk.pushSprite(30, 150);
+  clk.deleteSprite();
+
+  clk.createSprite(200, 10);
+  clk.setTextDatum(CC_DATUM);
   clk.setTextColor(TFT_WHITE, 0x0000);
-  clk.drawRightString(DESC, 200, 90, 1);
-  clk.pushSprite(20, 130); //窗口位置
+  clk.drawRightString(DESC, 200, 0, 1);
+  clk.pushSprite(20, 220);
   clk.deleteSprite();
 };
 

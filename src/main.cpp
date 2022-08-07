@@ -66,7 +66,7 @@ void setup()
     mcWifi.writeWifiConfig();
   }
 
-  touchBtn.attachDoubleClick(changeTheme);
+  touchBtn.attachClick(changeTheme);
 
   mcHost.init();
 }
