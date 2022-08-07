@@ -23,7 +23,7 @@ McLoading mcLoading;
 McHost mcHost;
 McWallpaper mcWallpaper;
 
-int themeCounter = 0;
+int themeCounter;
 void changeTheme() {
   themeCounter = (themeCounter + 1) % 2;
   if (themeCounter == 0) {
@@ -38,37 +38,54 @@ void setup()
   // 打开调试串口以及EEPROM
   Serial.begin(115200);
   EEPROM.begin(1024);
+
   if (DEBUG) {
     delay(3000);
     Serial.println("wait for Serial ready in DEBUG env");
   }
 
-  // 从EEPROM中恢复配置
-  mcWifi.readWifiConfig();
+  if (!OFFLINE) {
+    // 从EEPROM中恢复配置
+    mcWifi.readWifiConfig();
 
-  // 初始化LCD屏相关配置
-  mcLcd.initLcd();
-  // 初始化图片库能力
-  mcLcd.initTJpgDec();
+    // 初始化LCD屏相关配置
+    mcLcd.initLcd();
+    // 初始化图片库能力
+    mcLcd.initTJpgDec();
 
-  // 按照配置尝试进行连接
-  mcWifi.link();
-  // 显示开机画面,等待WIFI连接
-  mcLoading.loading();
-  // 如果WIFI连接失败那么打开AP，进行手机配置
-  if (WiFi.status() != WL_CONNECTED) {
-    mcWifi.openWifiAP();
+    // 按照配置尝试进行连接
+    mcWifi.link();
+    // 显示开机画面,等待WIFI连接
+    mcLoading.loading();
+    // 如果WIFI连接失败那么打开AP，进行手机配置
+    if (WiFi.status() != WL_CONNECTED) {
+      mcWifi.openWifiAP();
+    }
+
+    // 从WIFI实例中读取wifi配置写入EEPROM
+    if (WiFi.status() == WL_CONNECTED)
+    {
+      mcWifi.writeWifiConfig();
+    }
+
+    // theme switch setting
+    themeCounter = 0;
+    touchBtn.attachClick(changeTheme);
+
+    // init theme
+    mcHost.init();
+  } else {
+    // 初始化LCD屏相关配置
+    mcLcd.initLcd();
+    // 初始化图片库能力
+    mcLcd.initTJpgDec();
+    
+    // theme switch setting
+    themeCounter = 1;
+
+    // init theme
+    mcWallpaper.init();
   }
-
-  // 从WIFI实例中读取wifi配置写入EEPROM
-  if (WiFi.status() == WL_CONNECTED)
-  {
-    mcWifi.writeWifiConfig();
-  }
-
-  touchBtn.attachClick(changeTheme);
-
-  mcHost.init();
 }
 
 

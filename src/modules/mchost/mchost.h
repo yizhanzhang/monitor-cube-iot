@@ -25,6 +25,7 @@ struct HostInfo {
 class McHost {
   private:
     HostInfo hostInfo;
+    bool hasInited;
     int timestampInfo;
     void drawAst();
     void drawInfo();
