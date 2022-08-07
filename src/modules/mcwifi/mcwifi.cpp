@@ -1,7 +1,5 @@
 #include "mcwifi.h"
 
-extern int wifi_addr;
-
 extern TFT_eSprite clk;
 extern McLcd mcLcd;
 extern WiFiManager wm;
@@ -19,7 +17,7 @@ void McWifi::readWifiConfig() {
   uint8_t *p = (uint8_t*)(&wifiConf);
   for (int i = 0; i < sizeof(wifiConf); i++)
   {
-    *(p + i) = EEPROM.read(wifi_addr + i);
+    *(p + i) = EEPROM.read(ADDR_WIFI + i);
   }
   Serial.println("Read WiFi Config.....");
   Serial.print("SSID   :");
@@ -52,7 +50,7 @@ void McWifi::writeConfig2EEPROM() {
   uint8_t *p = (uint8_t*)(&wifiConf);
   for (int i = 0; i < sizeof(wifiConf); i++)
   {
-    EEPROM.write(wifi_addr + i, *(p + i)); //在闪存内模拟写入
+    EEPROM.write(ADDR_WIFI + i, *(p + i)); //在闪存内模拟写入
   }
 
   delay(10);

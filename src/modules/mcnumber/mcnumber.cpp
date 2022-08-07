@@ -1,9 +1,9 @@
-#include "number.h"
+#include "mcnumber.h"
 
 #include <TJpg_Decoder.h>
 
 //显示白色36*60大小数字
-void Number::printfW3660(int numx,int numy,int numn)
+void McNumber::printfW3660(int numx,int numy,int numn)
 {
   switch(numn)
   {
@@ -43,7 +43,7 @@ void Number::printfW3660(int numx,int numy,int numn)
   }
 }
 //显示橙色36*60大小数字
-void Number::printfO3660(int numx,int numy,int numn)
+void McNumber::printfO3660(int numx,int numy,int numn)
 {
   switch(numn)
   {
@@ -83,7 +83,7 @@ void Number::printfO3660(int numx,int numy,int numn)
   }
 }
 //显示白色18*30大小数字
-void Number::printfW1830(int numx,int numy,int numn)
+void McNumber::printfW1830(int numx,int numy,int numn)
 {
   switch(numn)
   {

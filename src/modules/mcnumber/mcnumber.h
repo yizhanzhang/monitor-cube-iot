@@ -1,5 +1,5 @@
-#ifndef NUMBER_H
-#define NUMBER_H
+#ifndef MC_NUMBER_H
+#define MC_NUMBER_H
 
 #include <TFT_eSPI.h> 
 
@@ -37,7 +37,7 @@
 #include "../../font/W_1830_i9.h"
 
 
-class Number
+class McNumber
 {
 private:
 

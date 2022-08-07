@@ -10,6 +10,7 @@
 #include <WiFiManager.h>
 #include <string.h>
 
+#include "../../global.define.h"
 #include "../mclcd/mclcd.h"
 
 struct WifiConfigType

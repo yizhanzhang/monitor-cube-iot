@@ -1,72 +1,22 @@
 #include <Arduino.h>
-#include <ArduinoJson.h>
-#include <TimeLib.h>
 #include <ESP8266WiFi.h>
-#include <ESP8266HTTPClient.h>
-#include <ESP8266WebServer.h>
-#include <WiFiUdp.h>
 #include <TFT_eSPI.h>
-#include <SPI.h>
-#include <TJpg_Decoder.h>
-#include <EEPROM.h>
 #include <WiFiManager.h>
-#include "font/ZdyLwFont_20.h"
-#include "src/number/number.h"
-#include "src/mclcd/mclcd.h"
-#include "src/mcwifi/mcwifi.h"
-#include "src/mcloading/mcloading.h"
-#include "src/mchost/mchost.h"
+#include "global.define.h"
+#include "modules/mclcd/mclcd.h"
+#include "modules/mcwifi/mcwifi.h"
+#include "modules/mcloading/mcloading.h"
+#include "modules/mchost/mchost.h"
+#include "modules/mcserial/mcserial.h"
 
-/*** Component objects ***/
+/* 全局唯一实例 */
 WiFiManager wm;
-Number dig;
 McLcd mcLcd;
 McWifi mcWifi;
 McLoading mcLoading;
 McHost mcHost;
-
-//LCD屏幕相关设置
-TFT_eSPI tft = TFT_eSPI(240, 240);
+TFT_eSPI tft = TFT_eSPI();
 TFT_eSprite clk = TFT_eSprite(&tft);
-
-uint16_t bgColor = 0x0000;
-
-//EEPROM参数存储地址位
-int wifi_addr = 30;
-
-String SMOD = "";
-//串口调试设置函数
-void Serial_set();
-void Serial_set() {
-  String incomingByte = "";
-  if (Serial.available() > 0) {
-    while (Serial.available() > 0)
-    {
-      incomingByte += char(Serial.read());
-      delay(2);
-    }
-    if (SMOD == "0x01") {
-      Serial.println("设置亮度中......");
-      incomingByte.trim();
-      int brightness = incomingByte.toInt();
-      mcLcd.setBrightness(brightness);
-      Serial.print("设置亮度完成:");
-      Serial.println(brightness);
-      SMOD = "";
-    } else if (SMOD == "0x05") {
-      Serial.println("重置WiFi设置中......");
-      mcWifi.clearWifiConfig();
-      wm.resetSettings();
-      delay(10);
-      Serial.println("重置WiFi成功");
-      SMOD = "";
-    } else {
-      SMOD = incomingByte;
-      SMOD.trim();
-    }
-  }
-};
-
 
 void setup()
 {
@@ -75,7 +25,7 @@ void setup()
   EEPROM.begin(1024);
   if (DEBUG) {
     delay(3000);
-    Serial.println("wait for Serial in DEBUG env");
+    Serial.println("wait for Serial ready in DEBUG env");
   }
 
   // 从EEPROM中恢复配置
@@ -109,5 +59,5 @@ void setup()
 void loop()
 {
   mcHost.update();
-  Serial_set();
+  serialSet();
 }
