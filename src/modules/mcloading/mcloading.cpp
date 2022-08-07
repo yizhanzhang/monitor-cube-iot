@@ -3,21 +3,17 @@
 extern TFT_eSprite clk;
 
 const uint8_t *loadImgArr[] = {
-  ii0,  ii1,  ii2,  ii3,  ii4,  ii5,
-  ii6,  ii7,  ii8,  ii9,  ii10, ii11,
-  ii12, ii13, ii14, ii15, ii16, ii17,
-  ii18, ii19, ii20, ii21, ii22, ii23,
-  ii24, ii25, ii26, ii27, ii28, ii29,
-  ii30, ii31, ii32, ii33, ii34, ii35,
+  ii0,  ii2,   ii4,   ii6,  ii8,
+  ii10, ii12,  ii14,  ii16, ii18,
+  ii20, ii22,  ii24,  ii26, ii28, 
+  ii30, ii32,  ii34, 
 };
 
 uint32_t loadImgSizeArr[] = {
-  sizeof(ii0),  sizeof(ii1),  sizeof(ii2),  sizeof(ii3),  sizeof(ii4),  sizeof(ii5),
-  sizeof(ii6),  sizeof(ii7),  sizeof(ii8),  sizeof(ii9),  sizeof(ii10), sizeof(ii11),
-  sizeof(ii12), sizeof(ii13), sizeof(ii14), sizeof(ii15), sizeof(ii16), sizeof(ii17),
-  sizeof(ii18), sizeof(ii19), sizeof(ii20), sizeof(ii21), sizeof(ii22), sizeof(ii23),
-  sizeof(ii24), sizeof(ii25), sizeof(ii26), sizeof(ii27), sizeof(ii28), sizeof(ii29),
-  sizeof(ii30), sizeof(ii31), sizeof(ii32), sizeof(ii33), sizeof(ii34), sizeof(ii35),
+  sizeof(ii0),  sizeof(ii2),  sizeof(ii4),  sizeof(ii6),  sizeof(ii8),
+  sizeof(ii10), sizeof(ii12), sizeof(ii14), sizeof(ii16), sizeof(ii18),
+  sizeof(ii20), sizeof(ii22), sizeof(ii24), sizeof(ii26), sizeof(ii28),
+  sizeof(ii30), sizeof(ii32), sizeof(ii34),
 };
 
 McLoading::McLoading(void) {
@@ -50,8 +46,8 @@ void McLoading::drawAnim() {
   
   /* 绘制动图和文案提示 */
   // 动图部分
-  int animCounter = animLoopCounter % 36;
-  if (animCounter < 36) {
+  int animCounter = animLoopCounter % 18;
+  if (animCounter < 18) {
     TJpgDec.drawJpg(IMG_X, IMG_Y, loadImgArr[animCounter], loadImgSizeArr[animCounter]);
   } else {
     Serial.println("显示AnimLoad错误");

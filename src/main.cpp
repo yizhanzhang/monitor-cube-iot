@@ -2,21 +2,36 @@
 #include <ESP8266WiFi.h>
 #include <TFT_eSPI.h>
 #include <WiFiManager.h>
+#include <OneButton.h>
 #include "global.define.h"
 #include "modules/mclcd/mclcd.h"
 #include "modules/mcwifi/mcwifi.h"
 #include "modules/mcloading/mcloading.h"
 #include "modules/mchost/mchost.h"
+#include "modules/mcwallpaper/mcwallpaper.h"
 #include "modules/mcserial/mcserial.h"
 
 /* 全局唯一实例 */
+TFT_eSPI tft = TFT_eSPI();
+TFT_eSprite clk = TFT_eSprite(&tft);
+OneButton touchBtn = OneButton(4, true, false);
+
 WiFiManager wm;
 McLcd mcLcd;
 McWifi mcWifi;
 McLoading mcLoading;
 McHost mcHost;
-TFT_eSPI tft = TFT_eSPI();
-TFT_eSprite clk = TFT_eSprite(&tft);
+McWallpaper mcWallpaper;
+
+int themeCounter = 0;
+void changeTheme() {
+  themeCounter = (themeCounter + 1) % 2;
+  if (themeCounter == 0) {
+    mcHost.init();
+  } else {
+    mcWallpaper.init();
+  }
+}
 
 void setup()
 {
@@ -51,6 +66,8 @@ void setup()
     mcWifi.writeWifiConfig();
   }
 
+  touchBtn.attachDoubleClick(changeTheme);
+
   mcHost.init();
 }
 
@@ -58,6 +75,11 @@ void setup()
 
 void loop()
 {
-  mcHost.update();
+  touchBtn.tick();
+  if (themeCounter == 0) {
+    mcHost.update();
+  } else {
+    mcWallpaper.draw();
+  }
   serialSet();
 }
