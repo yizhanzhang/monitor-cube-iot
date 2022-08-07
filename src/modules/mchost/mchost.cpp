@@ -64,7 +64,7 @@ void McHost::fetchInfo() {
   /* fetch info */
   String URL = mcWifi.wifiConf.hostIp;
   if (!hostIp.startsWith("http://") && !hostIp.startsWith("https://")) {
-    URL = "http://" + URL
+    URL = "http://" + URL;
   }
   //创建 HTTPClient 对象
   HTTPClient httpClient;
