@@ -15,9 +15,10 @@ void serialSet() {
       incomingByte += char(Serial.read());
       delay(2);
     }
+    incomingByte.trim();
+    Serial.println("[MC_SERIAL] INCOMING BYTE:" + incomingByte);
     if (SMOD == "0x01") {
       Serial.println("设置亮度中......");
-      incomingByte.trim();
       int brightness = incomingByte.toInt();
       mcLcd.setBrightness(brightness);
       Serial.print("设置亮度完成:");
@@ -27,12 +28,13 @@ void serialSet() {
       Serial.println("重置WiFi设置中......");
       mcWifi.clearWifiConfig();
       wm.resetSettings();
-      delay(10);
       Serial.println("重置WiFi成功");
       SMOD = "";
+      delay(1000);
+      ESP.restart();
     } else {
       SMOD = incomingByte;
-      SMOD.trim();
+      Serial.println("[MC_SERIAL] SET MODE:" + SMOD);
     }
   }
 }
