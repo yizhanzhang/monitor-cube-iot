@@ -1,11 +1,14 @@
-# monitor_cube
+# MonitorCube
 
-A monitor cube by yizhanzhang, show cpu, mem, and net speed
+MonitorCube is a simple IOT device, base on esp 8266.
+It was created by yizhanzhang just for fun.
 
-## 引脚分配:
+## Pin Config
 
-  SCK   GPIO14
-  MOSI  GPIO13
-  RES   GPIO2
-  DC    GPIO0
-  LCDBL GPIO5
+|       |        |
+| ----  | ----   |
+| SCK   | GPIO14 |
+| MOSI  | GPIO13 |
+| RES   | GPIO2  |
+| DC    | GPIO0  |
+| LCDBL | GPIO5  |
