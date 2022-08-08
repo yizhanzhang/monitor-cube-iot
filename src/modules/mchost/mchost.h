@@ -13,7 +13,7 @@
 #include "../../img/host/upload.h"
 #include "../../img/astronaut/i0.h"
 
-#define TIME_GAP_INFO 1000
+#define TIME_GAP_INFO 2000
 
 struct HostInfo {
   int cpuData;
