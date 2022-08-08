@@ -7,9 +7,9 @@
 #include "modules/mclcd/mclcd.h"
 #include "modules/mcwifi/mcwifi.h"
 #include "modules/mcloading/mcloading.h"
-#include "modules/mchost/mchost.h"
-#include "modules/mcwallpaper/mcwallpaper.h"
 #include "modules/mcserial/mcserial.h"
+#include "modules/mchost/mchost.h"
+#include "modules/mctheme/mcwallpaper/mcwallpaper.h"
 
 /* 全局唯一实例 */
 TFT_eSPI tft = TFT_eSPI();
@@ -96,7 +96,7 @@ void loop()
   if (themeCounter == 0) {
     mcHost.update();
   } else {
-    mcWallpaper.draw();
+    mcWallpaper.update();
   }
   serialSet();
 }
