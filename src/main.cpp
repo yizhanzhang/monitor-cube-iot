@@ -20,6 +20,7 @@ WiFiManager wm;
 McLcd mcLcd;
 McWifi mcWifi;
 McLoading mcLoading;
+McSerial mcSerial;
 McHost mcHost;
 McWallpaper mcWallpaper;
 
@@ -98,5 +99,5 @@ void loop()
   } else {
     mcWallpaper.update();
   }
-  serialSet();
+  mcSerial.serialLoop();
 }

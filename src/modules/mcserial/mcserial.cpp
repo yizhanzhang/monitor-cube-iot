@@ -4,10 +4,13 @@ extern WiFiManager wm;
 extern McLcd mcLcd;
 extern McWifi mcWifi;
 
-String SMOD = "";
-String incomingByte = "";
+McSerial::McSerial() {
+  SerialCommand lightCommand{"0x01", "调整亮度"};
+  mapSerialCommand[lightCommand.id] = lightCommand;
+};
+
 //串口调试设置函数
-void serialSet() {
+void McSerial::serialLoop() {
   String incomingByte = "";
   if (Serial.available() > 0) {
     while (Serial.available() > 0)

@@ -122,7 +122,7 @@ void McHost::drawInfo() {
   clk.setTextDatum(CC_DATUM);
   clk.drawString(hostInfo.netUploadData, 45, 12);
   clk.pushSprite(47, 69);
-  // write not download
+  // write net download
   clk.setColorDepth(8);
   clk.createSprite(90, 24);
   clk.fillSprite(0x0000);
@@ -133,7 +133,6 @@ void McHost::drawInfo() {
   clk.pushSprite(47, 34);
 
   clk.deleteSprite();
-  // write net download
 };
 
 void McHost::updateInfo() {
