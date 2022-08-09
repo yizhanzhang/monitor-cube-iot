@@ -1,23 +1,23 @@
 #ifndef MC_SERIAL_H
 #define MC_SERIAL_H
 
-#include <string>
 #include <map>
 #include <WiFiManager.h>
 #include "../mclcd/mclcd.h"
 #include "../mcwifi/mcwifi.h"
 
-using namespace std;
-
 struct SerialCommand {
-  string id;
-  string title;
+  String key;
+  String title;
+  String inputTip;
 };
 
 class McSerial {
   private:
-    std::map<string, SerialCommand> mapSerialCommand;
     String SMOD;
+    std::map<String, SerialCommand> serialCommandMap;
+    void initCommandMap();
+    void serialLog(String txt);
   public:
     McSerial();
     void serialLoop();

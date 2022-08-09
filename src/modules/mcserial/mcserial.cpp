@@ -5,39 +5,63 @@ extern McLcd mcLcd;
 extern McWifi mcWifi;
 
 McSerial::McSerial() {
-  SerialCommand lightCommand{"0x01", "调整亮度"};
-  mapSerialCommand[lightCommand.id] = lightCommand;
+  SMOD = "";
+  initCommandMap();
+};
+
+void McSerial::initCommandMap() {
+  SerialCommand lightCommand{"0x01", "调整亮度", "请输入1-100之间的数字"};
+  serialCommandMap[lightCommand.key] = lightCommand;
+
+  SerialCommand resetCommand{"0x05", "重置设备", ""};
+  serialCommandMap[resetCommand.key] = resetCommand;
+};
+
+void McSerial::serialLog(String txt) {
+  Serial.println("[MC_SERIAL] " + txt);
 };
 
 //串口调试设置函数
 void McSerial::serialLoop() {
-  String incomingByte = "";
-  if (Serial.available() > 0) {
-    while (Serial.available() > 0)
-    {
-      incomingByte += char(Serial.read());
-      delay(2);
-    }
-    incomingByte.trim();
-    Serial.println("[MC_SERIAL] INCOMING BYTE:" + incomingByte);
+  if (!Serial.available()) return void();
+
+  // get inputByte
+  String inputByte = "";
+  while (Serial.available() > 0) {
+    inputByte += char(Serial.read());
+    delay(2);
+  }
+  inputByte.trim();
+  serialLog("INCOMING BYTE:" + inputByte);
+
+  // check SMOD is existed
+  if (SMOD.length()) {
     if (SMOD == "0x01") {
-      Serial.println("设置亮度中......");
-      int brightness = incomingByte.toInt();
+      int brightness = inputByte.toInt();
       mcLcd.setBrightness(brightness);
-      Serial.print("设置亮度完成:");
-      Serial.println(brightness);
-      SMOD = "";
+      serialLog("设置亮度完成:" + brightness);
     } else if (SMOD == "0x05") {
-      Serial.println("重置WiFi设置中......");
       mcWifi.clearWifiConfig();
       wm.resetSettings();
-      Serial.println("重置WiFi成功");
-      SMOD = "";
+      serialLog("重置WiFi成功,准备重启");
       delay(1000);
       ESP.restart();
-    } else {
-      SMOD = incomingByte;
-      Serial.println("[MC_SERIAL] SET MODE:" + SMOD);
+    }
+    SMOD = "";
+    return void();
+  }
+
+  // check inputByte is in serialCommandMap
+  if (serialCommandMap.count(inputByte)) {
+    SMOD = inputByte;
+    SerialCommand targetCmd = serialCommandMap[SMOD];
+    serialLog("SET MODE: " + targetCmd.title);
+    serialLog(targetCmd.inputTip.length() ? targetCmd.inputTip : "按回车键继续...");
+  } else {
+    serialLog("可用指令集目录:");
+    for (auto iter = serialCommandMap.begin(); iter != serialCommandMap.end(); ++iter) {
+      SerialCommand targetCmd = iter->second;
+      serialLog("- " + targetCmd.key + ": " + targetCmd.title);
     }
   }
-}
+};
