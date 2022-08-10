@@ -10,6 +10,7 @@ struct SerialCommand {
   String key;
   String title;
   String inputTip;
+  void   (*handle)(String);
 };
 
 class McSerial {
@@ -17,7 +18,6 @@ class McSerial {
     String SMOD;
     std::map<String, SerialCommand> serialCommandMap;
     void initCommandMap();
-    void serialLog(String txt);
   public:
     McSerial();
     void serialLoop();

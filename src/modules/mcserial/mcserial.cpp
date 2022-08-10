@@ -4,21 +4,36 @@ extern WiFiManager wm;
 extern McLcd mcLcd;
 extern McWifi mcWifi;
 
+void serialLog(String txt) {
+  Serial.println("[MC_SERIAL] " + txt);
+};
+
+void setLightness(String input) {
+  int brightness = input.toInt();
+  mcLcd.setBrightness(brightness);
+  serialLog("重置亮度完成:" + input);
+};
+
+void resetDevice(String input) {
+  mcWifi.clearWifiConfig();
+  wm.resetSettings();
+  serialLog("重置WiFi成功,准备重启");
+  delay(1000);
+  ESP.restart();
+};
+
+
 McSerial::McSerial() {
   SMOD = "";
   initCommandMap();
 };
 
 void McSerial::initCommandMap() {
-  SerialCommand lightCommand{"0x01", "调整亮度", "请输入1-100之间的数字"};
+  SerialCommand lightCommand{"0x01", "调整亮度", "请输入1-100之间的数字", setLightness};
   serialCommandMap[lightCommand.key] = lightCommand;
 
-  SerialCommand resetCommand{"0x05", "重置设备", ""};
+  SerialCommand resetCommand{"0x05", "重置设备", "", resetDevice};
   serialCommandMap[resetCommand.key] = resetCommand;
-};
-
-void McSerial::serialLog(String txt) {
-  Serial.println("[MC_SERIAL] " + txt);
 };
 
 //串口调试设置函数
@@ -36,16 +51,11 @@ void McSerial::serialLoop() {
 
   // check SMOD is existed
   if (SMOD.length()) {
-    if (SMOD == "0x01") {
-      int brightness = inputByte.toInt();
-      mcLcd.setBrightness(brightness);
-      serialLog("设置亮度完成:" + brightness);
-    } else if (SMOD == "0x05") {
-      mcWifi.clearWifiConfig();
-      wm.resetSettings();
-      serialLog("重置WiFi成功,准备重启");
-      delay(1000);
-      ESP.restart();
+    if (serialCommandMap.count(SMOD)) {
+      SerialCommand targetCmd = serialCommandMap[SMOD];
+      targetCmd.handle(inputByte);
+    } else {
+      serialLog("未识别的指令: " + SMOD);
     }
     SMOD = "";
     return void();
