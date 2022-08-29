@@ -28,6 +28,5 @@ void McSerial::serialLoop() {
   serialLog("INCOMING BYTE:" + inputByte);
 
   // use command
-  String str = "{\"cpuData\": 33, \"memData\": 22, \"downloadData\": \"0.33MB\", \"uploadData\": \"0.22MB\" }";
-  mcHost.fetchInfo(str);
+  mcHost.fetchInfo(inputByte);
 };
