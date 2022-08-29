@@ -2,7 +2,6 @@
 
 extern TFT_eSprite clk;
 extern TFT_eSPI tft;
-extern McWifi mcWifi;
 
 WiFiClient wificlient;
 StaticJsonDocument<200> doc;
@@ -50,32 +49,7 @@ void McHost::drawAst() {
   TJpgDec.drawJpg(20, 110, ast0, sizeof(ast0));
 };
 
-void McHost::fetchInfo() {
-  /* fetch info */
-  String URL = mcWifi.wifiConf.hostIp;
-  if (!URL.startsWith("http://") && !URL.startsWith("https://")) {
-    URL = "http://" + URL;
-  }
-  //创建 HTTPClient 对象
-  HTTPClient httpClient;
-  httpClient.begin(wificlient, URL);
-  //启动连接并发送HTTP请求
-  int httpCode = httpClient.GET();
-  Serial.print("Send GET request to Info URL: ");
-  Serial.println(URL);
-  //如果服务器响应OK则从服务器获取响应体信息并通过串口输出
-  String str = "";
-  if (httpCode == HTTP_CODE_OK) {
-    str = httpClient.getString();
-    Serial.println("获取主机信息成功");
-    Serial.println(str);
-  } else {
-    Serial.println("请求主机信息失败");
-    Serial.println(httpCode);
-  }
-  //关闭ESP8266与服务器连接
-  httpClient.end();
-
+void McHost::fetchInfo(String str) {
   /* 解析数据 */
   DeserializationError error = deserializeJson(doc, str);
   //检查反序列化是否成功
@@ -135,17 +109,11 @@ void McHost::drawInfo() {
   clk.deleteSprite();
 };
 
-void McHost::updateInfo() {
-  fetchInfo();
-  drawInfo();
-}
-
-
 void McHost::update() {
   int nowStamp = millis();
 
   if (nowStamp - timestampInfo > TIME_GAP_INFO) {
-    updateInfo();
+    drawInfo();
     timestampInfo = millis();
   } else if (nowStamp < timestampInfo) { // 兼容milles极限
     timestampInfo = millis();

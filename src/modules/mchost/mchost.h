@@ -5,7 +5,6 @@
 #include <TFT_eSPI.h>
 #include <TJpg_Decoder.h>
 #include <ESP8266HTTPClient.h>
-#include "../mcwifi/mcwifi.h"
 
 #include "../../img/host/i0.h"
 #include "../../img/host/i1.h"
@@ -13,7 +12,7 @@
 #include "../../img/host/upload.h"
 #include "../../img/astronaut/i0.h"
 
-#define TIME_GAP_INFO 2000
+#define TIME_GAP_INFO 1000
 
 struct HostInfo {
   int cpuData;
@@ -29,12 +28,11 @@ class McHost {
     int timestampInfo;
     void drawAst();
     void drawInfo();
-    void fetchInfo();
-    void updateInfo();
   public:
     McHost();
     void init();
     void update();
+    void fetchInfo(String str);
 };
 
 # endif

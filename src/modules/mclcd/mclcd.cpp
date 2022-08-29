@@ -1,7 +1,6 @@
 #include "mclcd.h"
 
 extern TFT_eSPI tft;
-extern McWifi mcWifi;
 
 bool tft_output(int16_t x, int16_t y, uint16_t w, uint16_t h, uint16_t* bitmap) {
   if ( y >= tft.height() ) return 0;
@@ -18,7 +17,7 @@ void McLcd::initLcd() {
   tft.setRotation(0); // 设定屏幕方向
   tft.fillScreen(TFT_BLACK);
 
-  setBrightness(mcWifi.wifiConf.lcdBl);
+  setBrightness(8);
 };
 
 void McLcd::setBrightness(int pwm) {
