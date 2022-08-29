@@ -93,11 +93,11 @@ void setup()
 
 void loop()
 {
+  mcSerial.serialLoop();
   touchBtn.tick();
   if (themeCounter == 0) {
     mcHost.update();
   } else {
     mcWallpaper.update();
   }
-  mcSerial.serialLoop();
 }
