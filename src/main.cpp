@@ -22,6 +22,10 @@ void switchTheme() {
   mcThemeManager.switchTheme();
 }
 
+void clickTheme() {
+  mcThemeManager.clickTheme();
+}
+
 void setup()
 {
   // 打开调试串口以及EEPROM
@@ -36,6 +40,7 @@ void setup()
 
   // theme switch setting
   touchBtn.attachDoubleClick(switchTheme);
+  touchBtn.attachClick(clickTheme);
 }
 
 void loop()

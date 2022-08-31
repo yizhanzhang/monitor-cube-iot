@@ -18,6 +18,10 @@ void McThemeManager::switchTheme() {
   themeVector.at(counter)->init();
 }
 
+void McThemeManager::clickTheme() {
+  themeVector.at(counter)->click();
+}
+
 void McThemeManager::tick() {
   themeVector.at(counter)->update();
 }

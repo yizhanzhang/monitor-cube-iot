@@ -11,6 +11,9 @@ class McThemeBase {
     virtual void update() {
       Serial.println("McThemeBase update");
     };
+    virtual void click() {
+      Serial.println("McThemeBase click");
+    };
 };
 
 #endif

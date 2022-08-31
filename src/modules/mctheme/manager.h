@@ -14,6 +14,7 @@ class McThemeManager {
     McThemeManager();
     void initTheme();
     void switchTheme();
+    void clickTheme();
     void tick();
 };
 
