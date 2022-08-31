@@ -9,11 +9,11 @@
 
 class McLcd {
   private:
-
-  public:
     void initLcd();
-    void setBrightness(int pwm);
     void initTJpgDec();
+  public:
+    void init();
+    void setBrightness(int pwm);
 };
 
 

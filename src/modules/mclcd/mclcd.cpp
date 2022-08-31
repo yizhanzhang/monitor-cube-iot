@@ -8,8 +8,14 @@ bool tft_output(int16_t x, int16_t y, uint16_t w, uint16_t h, uint16_t* bitmap) 
   return 1;
 };
 
+void McLcd::init() {
+  Serial.println("McLcd: init");
+  initLcd();
+  initTJpgDec();
+  setBrightness(8);
+};
+
 void McLcd::initLcd() {
-  Serial.println("McLcd: initLcd");
   pinMode(LCD_BL_PIN, OUTPUT);
 
   tft.init(); /* TFT init */
@@ -20,6 +26,12 @@ void McLcd::initLcd() {
   setBrightness(8);
 };
 
+void McLcd::initTJpgDec() {
+  TJpgDec.setJpgScale(1);
+  TJpgDec.setSwapBytes(true);
+  TJpgDec.setCallback(tft_output);
+};
+
 void McLcd::setBrightness(int pwm) {
   if (pwm <= 0 || pwm >= 100) {
     pwm = 8;
@@ -27,10 +39,4 @@ void McLcd::setBrightness(int pwm) {
   analogWrite(LCD_BL_PIN, (1023 - (pwm * 10)) / 4);
   Serial.print("亮度调整为：");
   Serial.println(pwm);
-};
-
-void McLcd::initTJpgDec() {
-  TJpgDec.setJpgScale(1);
-  TJpgDec.setSwapBytes(true);
-  TJpgDec.setCallback(tft_output);
 };

@@ -36,19 +36,12 @@ void setup()
   Serial.begin(115200);
   EEPROM.begin(1024);
 
-  if (DEBUG) {
-    delay(3000);
-    Serial.println("wait for Serial ready in DEBUG env");
-  }
-
   // 初始化LCD屏相关配置
-  mcLcd.initLcd();
-  // 初始化图片库能力
-  mcLcd.initTJpgDec();
+  mcLcd.init();
 
   // theme switch setting
   themeCounter = 0;
-  touchBtn.attachClick(changeTheme);
+  touchBtn.attachDoubleClick(changeTheme);
 
   // init theme
   mcHost.init();
