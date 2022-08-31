@@ -25,6 +25,7 @@ McHost::McHost(void) {
 };
 
 void McHost::init() {
+  Serial.println("McHost::init");
   // 清屏
   tft.fillScreen(TFT_BLACK);
   // cpu and mem layout
@@ -48,20 +49,14 @@ void McHost::drawAst() {
   TJpgDec.drawJpg(20, 110, ast0, sizeof(ast0));
 };
 
-void McHost::updateInfo(String str) {
-  /* 解析数据 */
-  DeserializationError error = deserializeJson(doc, str);
-  //检查反序列化是否成功
-  if (!error) {
-    hostInfo.cpuData = doc["cpuData"];
-    hostInfo.memData = doc["memData"];
-    const char *netUploadData = doc["downloadData"];
-    hostInfo.netUploadData = netUploadData;
-    const char *netDownloadData = doc["uploadData"];
-    hostInfo.netDownloadData = netDownloadData;
-  } else {
-    hostInfo.cpuData = hostInfo.memData = 0;
-    hostInfo.netUploadData = hostInfo.netDownloadData = "";
+void McHost::update() {
+  int nowStamp = millis();
+
+  if (nowStamp - timestampInfo > TIME_GAP_INFO) {
+    drawInfo();
+    timestampInfo = millis();
+  } else if (nowStamp < timestampInfo) { // 兼容milles极限
+    timestampInfo = millis();
   }
 };
 
@@ -108,13 +103,19 @@ void McHost::drawInfo() {
   clk.deleteSprite();
 };
 
-void McHost::update() {
-  int nowStamp = millis();
-
-  if (nowStamp - timestampInfo > TIME_GAP_INFO) {
-    drawInfo();
-    timestampInfo = millis();
-  } else if (nowStamp < timestampInfo) { // 兼容milles极限
-    timestampInfo = millis();
+void McHost::updateInfo(String str) {
+  /* 解析数据 */
+  DeserializationError error = deserializeJson(doc, str);
+  //检查反序列化是否成功
+  if (!error) {
+    hostInfo.cpuData = doc["cpuData"];
+    hostInfo.memData = doc["memData"];
+    const char *netUploadData = doc["downloadData"];
+    hostInfo.netUploadData = netUploadData;
+    const char *netDownloadData = doc["uploadData"];
+    hostInfo.netDownloadData = netDownloadData;
+  } else {
+    hostInfo.cpuData = hostInfo.memData = 0;
+    hostInfo.netUploadData = hostInfo.netDownloadData = "";
   }
 };

@@ -8,6 +8,7 @@
 #include "modules/mcserial/mcserial.h"
 #include "modules/mctheme/mchost/mchost.h"
 #include "modules/mctheme/mcwallpaper/mcwallpaper.h"
+#include "modules/mctheme/manager.h"
 
 /* 全局唯一实例 */
 TFT_eSPI tft = TFT_eSPI();
@@ -19,15 +20,10 @@ McLoading mcLoading;
 McSerial mcSerial;
 McHost mcHost;
 McWallpaper mcWallpaper;
+McThemeManager mcThemeManager;
 
-int themeCounter;
-void changeTheme() {
-  themeCounter = (themeCounter + 1) % 2;
-  if (themeCounter == 0) {
-    mcHost.init();
-  } else {
-    mcWallpaper.init();
-  }
+void switchTheme() {
+  mcThemeManager.switchTheme();
 }
 
 void setup()
@@ -39,23 +35,16 @@ void setup()
   // 初始化LCD屏相关配置
   mcLcd.init();
 
+  // load initial theme
+  mcThemeManager.initTheme();
+
   // theme switch setting
-  themeCounter = 0;
-  touchBtn.attachDoubleClick(changeTheme);
-
-  // init theme
-  mcHost.init();
+  touchBtn.attachDoubleClick(switchTheme);
 }
-
-
 
 void loop()
 {
   mcSerial.serialLoop();
+  mcThemeManager.tick();
   touchBtn.tick();
-  if (themeCounter == 0) {
-    mcHost.update();
-  } else {
-    mcWallpaper.update();
-  }
 }
