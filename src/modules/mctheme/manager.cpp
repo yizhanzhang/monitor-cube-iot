@@ -1,7 +1,7 @@
 #include "manager.h"
 
-extern McHost mcHost;
-extern McWallpaper mcWallpaper;
+McHost mcHost;
+McWallpaper mcWallpaper;
 
 McThemeManager::McThemeManager() {
   counter = 0;

@@ -18,7 +18,7 @@ class McSerial {
     void initCommandMap();
   public:
     McSerial();
-    void serialLoop();
+    void tick();
 };
 
 #endif

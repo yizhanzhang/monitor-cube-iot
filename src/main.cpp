@@ -4,7 +4,6 @@
 #include <OneButton.h>
 #include "global.define.h"
 #include "modules/mclcd/mclcd.h"
-#include "modules/mcloading/mcloading.h"
 #include "modules/mcserial/mcserial.h"
 #include "modules/mctheme/mchost/mchost.h"
 #include "modules/mctheme/mcwallpaper/mcwallpaper.h"
@@ -16,10 +15,7 @@ TFT_eSprite clk = TFT_eSprite(&tft);
 OneButton touchBtn = OneButton(4, true, false);
 
 McLcd mcLcd;
-McLoading mcLoading;
 McSerial mcSerial;
-McHost mcHost;
-McWallpaper mcWallpaper;
 McThemeManager mcThemeManager;
 
 void switchTheme() {
@@ -44,7 +40,7 @@ void setup()
 
 void loop()
 {
-  mcSerial.serialLoop();
+  mcSerial.tick();
   mcThemeManager.tick();
   touchBtn.tick();
 }

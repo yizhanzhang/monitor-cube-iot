@@ -15,7 +15,7 @@ void McSerial::initCommandMap() {
 };
 
 //串口调试设置函数
-void McSerial::serialLoop() {
+void McSerial::tick() {
   if (!Serial.available()) return void();
 
   // get inputByte
