@@ -3,7 +3,6 @@
 extern TFT_eSprite clk;
 extern TFT_eSPI tft;
 
-WiFiClient wificlient;
 StaticJsonDocument<200> doc;
 
 const int columnOuterWidth = 30;
@@ -49,7 +48,7 @@ void McHost::drawAst() {
   TJpgDec.drawJpg(20, 110, ast0, sizeof(ast0));
 };
 
-void McHost::fetchInfo(String str) {
+void McHost::updateInfo(String str) {
   /* 解析数据 */
   DeserializationError error = deserializeJson(doc, str);
   //检查反序列化是否成功

@@ -6,7 +6,7 @@
 #include "modules/mclcd/mclcd.h"
 #include "modules/mcloading/mcloading.h"
 #include "modules/mcserial/mcserial.h"
-#include "modules/mchost/mchost.h"
+#include "modules/mctheme/mchost/mchost.h"
 #include "modules/mctheme/mcwallpaper/mcwallpaper.h"
 
 /* 全局唯一实例 */

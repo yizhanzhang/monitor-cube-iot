@@ -3,7 +3,7 @@
 
 #include <map>
 #include "../mclcd/mclcd.h"
-#include "../mchost/mchost.h"
+#include "../mctheme/mchost/mchost.h"
 
 struct SerialCommand {
   String key;

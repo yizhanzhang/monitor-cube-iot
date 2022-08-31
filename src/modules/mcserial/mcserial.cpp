@@ -28,5 +28,5 @@ void McSerial::serialLoop() {
   serialLog("INCOMING BYTE:" + inputByte);
 
   // use command
-  mcHost.fetchInfo(inputByte);
+  mcHost.updateInfo(inputByte);
 };
