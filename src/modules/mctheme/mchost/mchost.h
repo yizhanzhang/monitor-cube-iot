@@ -23,7 +23,7 @@
 #include "../../../img/astronaut/i36.h"
 
 #define TIME_GAP_INFO 1000
-#define TIME_GAP_AST  200
+#define TIME_GAP_AST  400
 
 struct HostInfo {
   int cpuData;
