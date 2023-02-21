@@ -13,18 +13,6 @@ const int columnInnerWidth = 18;
 const int columnInnerHeight = 168;
 const int columnInnerRadius =  4;
 
-const uint8_t *astImgArr[] = {
-  ast0,  ast4,  ast8,  ast12,  ast16,
-  ast20, ast24, ast28, ast32, ast36,
-};
-
-uint32_t astImgSizeArr[] = {
-  sizeof(ast0),  sizeof(ast4),  sizeof(ast8),  sizeof(ast12),  sizeof(ast16),
-  sizeof(ast20), sizeof(ast24), sizeof(ast28), sizeof(ast32), sizeof(ast36),
-};
-
-int astImgArrSize = sizeof(astImgArr) / sizeof(astImgArr[0]);
-
 void drawRoundRect(int32_t x, int32_t y, int32_t w, int32_t h, int32_t r, uint32_t color, int32_t thickness) {
   for (int i = 0; i < thickness; i++) {
     clk.drawRoundRect(x + i, y + i, w - 2 * i, h - 2 * i, r - 2 * i, color);
@@ -34,8 +22,6 @@ void drawRoundRect(int32_t x, int32_t y, int32_t w, int32_t h, int32_t r, uint32
 McHost::McHost(void) {
   hostInfo = HostInfo{ 0, 0, "00.00M", "00.00M" };
   timestampInfo = 0;
-  timestampAst = 0;
-  counterAst = 0;
 };
 
 void McHost::init() {
@@ -55,13 +41,16 @@ void McHost::init() {
   // net layout
   TJpgDec.drawJpg(20, 35, iupload_20X20, sizeof(iupload_20X20));
   TJpgDec.drawJpg(20, 70, idownload_20X20, sizeof(idownload_20X20));
-  // drawAst
-  drawAst();
-};
-
-void McHost::drawAst() {
-  TJpgDec.drawJpg(20, 110, astImgArr[counterAst], astImgSizeArr[counterAst]);
-  counterAst = (counterAst + 1) % astImgArrSize;
+  // stock layout
+  clk.setColorDepth(8);
+  clk.createSprite(110, 30);
+  clk.fillSprite(TFT_BLUE);
+  clk.setTextSize(2);
+  clk.setTextColor(TFT_WHITE);
+  clk.setTextDatum(CC_DATUM);
+  clk.drawString("TENCENT", 55, 15);
+  clk.pushSprite(18, 120);
+  clk.deleteSprite();
 };
 
 void McHost::update() {
@@ -71,17 +60,9 @@ void McHost::update() {
     drawInfo();
     timestampInfo = millis();
   }
-  if (nowStamp - timestampAst > TIME_GAP_AST) {
-    drawAst();
-    timestampAst = millis();
-  }
-
   // 兼容milles极限
   if (nowStamp < timestampInfo) { 
     timestampInfo = millis();
-  }
-  if (nowStamp < timestampAst) {
-    timestampAst = millis();
   }
 };
 
@@ -115,6 +96,7 @@ void McHost::drawInfo() {
   clk.setTextDatum(CC_DATUM);
   clk.drawString(hostInfo.netUploadData, 45, 12);
   clk.pushSprite(47, 69);
+  clk.deleteSprite();
   // write net download
   clk.setColorDepth(8);
   clk.createSprite(90, 24);
@@ -124,7 +106,22 @@ void McHost::drawInfo() {
   clk.setTextDatum(CC_DATUM);
   clk.drawString(hostInfo.netDownloadData, 45, 12);
   clk.pushSprite(47, 34);
-
+  clk.deleteSprite();
+  // write stock
+  clk.setColorDepth(8);
+  clk.createSprite(115, 40);
+  clk.fillSprite(TFT_BLACK);
+  clk.setTextSize(4);
+  clk.setTextDatum(CC_DATUM);
+  if (hostInfo.stockStatus == 0) {
+    clk.setTextColor(TFT_LIGHTGREY);
+  } else if (hostInfo.stockStatus == 1) {
+    clk.setTextColor(TFT_RED);
+  } else {
+    clk.setTextColor(TFT_GREEN);
+  }
+  clk.drawString(hostInfo.stockData, 60, 20);
+  clk.pushSprite(18, 164);
   clk.deleteSprite();
 };
 
@@ -139,8 +136,11 @@ void McHost::updateInfo(String str) {
     hostInfo.netUploadData = netUploadData;
     const char *netDownloadData = doc["uploadData"];
     hostInfo.netDownloadData = netDownloadData;
+    hostInfo.stockStatus = doc["stockStatus"];
+    const char *stockData = doc["stockStatus"];
+    hostInfo.stockData = stockData;
   } else {
-    hostInfo.cpuData = hostInfo.memData = 0;
-    hostInfo.netUploadData = hostInfo.netDownloadData = "";
+    hostInfo.cpuData = hostInfo.memData = hostInfo.stockStatus = 0;
+    hostInfo.netUploadData = hostInfo.netDownloadData = hostInfo.stockData = "";
   }
 };
