@@ -48,7 +48,7 @@ void McHost::init() {
   clk.setTextSize(2);
   clk.setTextColor(TFT_WHITE);
   clk.setTextDatum(CC_DATUM);
-  clk.drawString("TENCENT", 55, 15);
+  clk.drawString("TENCENT", 55, 16);
   clk.pushSprite(18, 120);
   clk.deleteSprite();
 };
@@ -137,7 +137,7 @@ void McHost::updateInfo(String str) {
     const char *netDownloadData = doc["uploadData"];
     hostInfo.netDownloadData = netDownloadData;
     hostInfo.stockStatus = doc["stockStatus"];
-    const char *stockData = doc["stockStatus"];
+    const char *stockData = doc["stockData"];
     hostInfo.stockData = stockData;
   } else {
     hostInfo.cpuData = hostInfo.memData = hostInfo.stockStatus = 0;
