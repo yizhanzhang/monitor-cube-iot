@@ -12,7 +12,7 @@
 /* 全局唯一实例 */
 TFT_eSPI tft = TFT_eSPI();
 TFT_eSprite clk = TFT_eSprite(&tft);
-OneButton touchBtn = OneButton(4, true, false);
+OneButton touchBtn = OneButton(TOUCH_PIN, true, false);
 
 McLcd mcLcd;
 McSerial mcSerial;

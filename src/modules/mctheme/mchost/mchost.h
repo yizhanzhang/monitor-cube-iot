@@ -11,7 +11,6 @@
 #include "../../../img/host/i1.h"
 #include "../../../img/host/download.h"
 #include "../../../img/host/upload.h"
-// #include "../../mcnumber/mcnumber.h"
 
 #define TIME_GAP_INFO 1000
 
@@ -27,7 +26,6 @@ struct HostInfo {
 class McHost: public McThemeBase {
   private:
     HostInfo hostInfo;
-    // McNumber mcNumber;
     bool hasInited;
     int timestampInfo;
     void drawInfo();
