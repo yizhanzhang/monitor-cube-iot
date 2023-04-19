@@ -1,17 +1,24 @@
 #ifndef MC_WALLPAPER_H
 #define MC_WALLPAPER_H
 
-#include <TJpg_Decoder.h>
+#include <Arduino.h>
+#include <FS.h>
+#include <JPEGDecoder.h>
+#include "jpg/jpg.h"
 #include "../base.h"
-#include "../../../img/wallpaper/windows-xp-x64.h"
 
 class McWallpaper: public McThemeBase {
   private:
-    bool hasDraw;
+    int counter;
+    int fileAmount;
+    void getFileAmount();
+    void listFiles();
+    void drawFile();
   public:
     McWallpaper();
     void init();
     void update();
+    void click();
 };
 
 #endif

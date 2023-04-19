@@ -2,9 +2,8 @@
 #define MC_SERIAL_H
 
 #include <map>
-#include <WiFiManager.h>
 #include "../mclcd/mclcd.h"
-#include "../mcwifi/mcwifi.h"
+#include "../mctheme/mchost/mchost.h"
 
 struct SerialCommand {
   String key;
@@ -15,12 +14,11 @@ struct SerialCommand {
 
 class McSerial {
   private:
-    String SMOD;
     std::map<String, SerialCommand> serialCommandMap;
     void initCommandMap();
   public:
     McSerial();
-    void serialLoop();
+    void tick();
 };
 
 #endif
