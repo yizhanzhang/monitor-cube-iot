@@ -12,22 +12,22 @@
 #include "../../../img/host/download.h"
 #include "../../../img/host/upload.h"
 
-#define TIME_GAP_INFO 1000
-
 struct HostInfo {
+  int timestamp;
   int cpuData;
   int memData;
   String netUploadData;
   String netDownloadData;
   int stockStatus;
+  String stockName;
   String stockData;
 };
 
 class McHost: public McThemeBase {
   private:
     HostInfo hostInfo;
-    bool hasInited;
-    int timestampInfo;
+    bool isInvalid;
+    int timestamp;
     void drawInfo();
   public:
     McHost();

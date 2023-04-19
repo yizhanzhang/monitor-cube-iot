@@ -1,12 +1,10 @@
 #include "manager.h"
 
 McHost mcHost;
-McWallpaper mcWallpaper;
 
 McThemeManager::McThemeManager() {
   counter = 0;
 	themeVector.push_back(&mcHost);
-  themeVector.push_back(&mcWallpaper);
 }
 
 void McThemeManager::initTheme() {

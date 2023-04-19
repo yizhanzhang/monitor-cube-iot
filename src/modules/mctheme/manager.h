@@ -4,7 +4,6 @@
 #include <vector>
 #include "base.h"
 #include "mchost/mchost.h"
-#include "mcwallpaper/mcwallpaper.h"
 
 class McThemeManager {
   private:

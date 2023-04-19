@@ -5,8 +5,6 @@
 #include "global.define.h"
 #include "modules/mclcd/mclcd.h"
 #include "modules/mcserial/mcserial.h"
-#include "modules/mctheme/mchost/mchost.h"
-#include "modules/mctheme/mcwallpaper/mcwallpaper.h"
 #include "modules/mctheme/manager.h"
 
 /* 全局唯一实例 */
