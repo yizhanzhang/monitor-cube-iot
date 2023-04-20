@@ -5,6 +5,10 @@ extern TFT_eSPI tft;
 
 StaticJsonDocument<300> doc;
 
+void drawMainImage(const uint8_t image[], uint32_t size) {
+  TJpgDec.drawJpg(POS_ERROR_X, POS_ERROR_Y, image, size);
+}
+
 void drawPercentColumn(int32_t x, int32_t y, int innerHeight, uint32_t color) {
   // draw bar
   clk.createSprite(COLUMN_OUTER_WIDTH, COLUMN_OUTER_HEIGHT);
@@ -79,7 +83,7 @@ void McHost::drawInfo() {
     isInvalid = nowInvalid;
   }
   if (isInvalid) {
-    drawTextString(POS_ERROR_X, POS_ERROR_Y, ERROR_WIDTH, ERROR_HEIGHT, "INVALID", ERROR_SIZE, TFT_RED);
+    drawMainImage(unlink_120X120, sizeof(unlink_120X120));
     return;
   }
 
@@ -123,6 +127,6 @@ void McHost::updateInfo(String str) {
   } else {
     hostInfo.timestamp = millis();
     hostInfo.cpuData = hostInfo.memData = hostInfo.stockStatus = 0;
-    hostInfo.netUploadData = hostInfo.netDownloadData = hostInfo.stockData = hostInfo.stockName = "";
+    hostInfo.netUploadData = hostInfo.netDownloadData = hostInfo.stockName = hostInfo.stockData = = "";
   }
 };

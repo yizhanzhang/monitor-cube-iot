@@ -11,6 +11,8 @@
 #include "../../../img/host/i1.h"
 #include "../../../img/host/download.h"
 #include "../../../img/host/upload.h"
+#include "../../../img/host/error.h"
+#include "../../../img/host/unlink.h"
 #include "./WeChatSansStd_Regular20pt7b.h"
 
 #define MYFONT20 &WeChatSansStd_Regular20pt7b
@@ -18,10 +20,7 @@
 #define RENDER_TIME_GAP 1000
 #define INFO_VALID_GAP 10000
 
-#define ERROR_WIDTH 160
-#define ERROR_HEIGHT 120
-#define ERROR_SIZE 4
-#define POS_ERROR_X 40
+#define POS_ERROR_X 60
 #define POS_ERROR_Y 60
 
 #define COLUMN_OUTER_WIDTH 30

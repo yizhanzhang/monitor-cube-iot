@@ -21,7 +21,7 @@ void convertToByteCode(string filepath) {
 
   string outFilepath = filepath + ".h";
   FILE *ofp = fopen(outFilepath.c_str(), "wb");
-  string output = "const uint8_t OUTPUT[] = {\n";
+  string output = "#include <pgmspace.h>\nconst uint8_t OUTPUT[] = {\n";
   for (int i = 0; i < size; i++) {
     std::ostringstream hex;
     hex << std::hex << (int)data[i];
@@ -42,6 +42,7 @@ void convertToByteCode(string filepath) {
 int main(int argc, char* argv[]) {
   if (argc < 2) return 0;
   string filepath = argv[1];
+  if (!filepath) return;
   convertToByteCode(filepath);
   return 0;
 }
