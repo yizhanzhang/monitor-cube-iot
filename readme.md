@@ -15,5 +15,5 @@ It was created by yizhanzhang just for fun.
 
 # tools
 
-* imageConvert: tools/convert.cpp
+* imageConvert: tools/convert
 * fontConvert: https://rop.nl/truetype2gfx/
