@@ -13,7 +13,7 @@
 #include "../../../img/host/upload.h"
 #include "../../../img/host/error.h"
 #include "../../../img/host/unlink.h"
-#include "./WeChatSansStd_Regular20pt7b.h"
+#include "../../../font/WeChatSansStd_Regular20pt7b.h"
 
 #define MYFONT20 &WeChatSansStd_Regular20pt7b
 

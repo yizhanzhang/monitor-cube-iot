@@ -127,6 +127,6 @@ void McHost::updateInfo(String str) {
   } else {
     hostInfo.timestamp = millis();
     hostInfo.cpuData = hostInfo.memData = hostInfo.stockStatus = 0;
-    hostInfo.netUploadData = hostInfo.netDownloadData = hostInfo.stockName = hostInfo.stockData = = "";
+    hostInfo.netUploadData = hostInfo.netDownloadData = hostInfo.stockName = hostInfo.stockData = "";
   }
 };
