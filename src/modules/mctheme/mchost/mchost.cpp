@@ -1,55 +1,5 @@
 #include "mchost.h"
 
-#define RENDER_TIME_GAP 1000
-#define INFO_VALID_GAP 10000
-
-#define ERROR_WIDTH 160
-#define ERROR_HEIGHT 120
-#define ERROR_SIZE 4
-#define POS_ERROR_X 40
-#define POS_ERROR_Y 60
-
-#define COLUMN_OUTER_WIDTH 30
-#define COLUMN_OUTER_HEIGHT 180
-#define COLUMN_OUTER_RADIUS 10
-#define COLUMN_OUTER_THICKNESS 3
-#define COLUMN_INNER_WIDTH 18
-#define COLUMN_INNER_HEIGHT 168
-#define COLUMN_INNER_RADIUS 4
-
-#define POS_CPU_COLUMN_X 140
-#define POS_CPU_COLUMN_Y 20
-#define POS_CPU_ICON_X 145
-#define POS_CPU_ICON_Y 210
-#define POS_MEM_COLUMN_X 190
-#define POS_MEM_COLUMN_Y 20
-#define POS_MEM_ICON_X 195
-#define POS_MEM_ICON_Y 210
-
-#define POS_NET_UPLOAD_ICON_X 20
-#define POS_NET_UPLOAD_ICON_Y 35
-#define POS_NET_DOWNLOAD_ICON_X 20
-#define POS_NET_DOWNLOAD_ICON_Y 70
-#define POS_NET_UPLOAD_TEXT_X 50
-#define POS_NET_UPLOAD_TEXT_Y 35
-#define POS_NET_DOWNLOAD_TEXT_X 50
-#define POS_NET_DOWNLOAD_TEXT_Y 70
-#define NET_TEXT_WIDTH 80
-#define NET_TEXT_HEIGHT 20
-#define NET_TEXT_SIZE 2
-
-#define POS_STOCK_LABEL_X 20
-#define POS_STOCK_LABEL_Y 125
-#define STOCK_LABEL_WIDTH 110
-#define STOCK_LABEL_HEIGHT 30
-#define STOCK_LABEL_SIZE 2
-#define POS_STOCK_PRICE_X 15
-#define POS_STOCK_PRICE_Y 170
-#define STOCK_PRICE_WIDTH 120
-#define STOCK_PRICE_HEIGHT 40
-#define STOCK_PRICE_SIZE 4
-
-
 extern TFT_eSprite clk;
 extern TFT_eSPI tft;
 
@@ -72,12 +22,19 @@ void drawPercentColumn(int32_t x, int32_t y, int innerHeight, uint32_t color) {
   clk.deleteSprite();
 }
 
-void drawTextString(int32_t x, int32_t y, int width, int height, String text, int textSize, uint32_t color, uint32_t bgColor = TFT_BLACK, uint32_t datum = MC_DATUM) {
+void drawTextString(int32_t x, int32_t y, int width, int height, String text, int fontSize, uint32_t color, uint32_t bgColor = TFT_BLACK, uint32_t datum = MC_DATUM) {
   clk.createSprite(width, height);
   clk.fillSprite(bgColor);
-  clk.setTextSize(textSize);
   clk.setTextColor(color);
   clk.setTextDatum(datum);
+  // support wechat font for 20 size
+  if (fontSize == 4) {
+    clk.setFreeFont(MYFONT20);
+    clk.setTextSize(1);
+  } else {
+    clk.setTextFont(1);
+    clk.setTextSize(fontSize);
+  }
   int textOffsetX = 0;
   int textOffsetY = 0;
   if (datum == MC_DATUM) {
@@ -87,7 +44,7 @@ void drawTextString(int32_t x, int32_t y, int width, int height, String text, in
     textOffsetX = 0;
     textOffsetY = height / 2;
   }
-  clk.drawString(text, textOffsetX, textOffsetY);
+  clk.drawString(text, textOffsetX, textOffsetY, 1);
   clk.pushSprite(x, y);
   clk.deleteSprite();
 }
@@ -136,7 +93,7 @@ void McHost::drawInfo() {
 
   // 绘制NET
   TJpgDec.drawJpg(POS_NET_UPLOAD_ICON_X, POS_NET_UPLOAD_ICON_Y, iupload_20X20, sizeof(iupload_20X20));
-  drawTextString(POS_NET_UPLOAD_TEXT_X, POS_NET_UPLOAD_TEXT_Y, NET_TEXT_WIDTH, NET_TEXT_HEIGHT, hostInfo.netUploadData,  NET_TEXT_SIZE, TFT_ORANGE, ML_DATUM);
+  drawTextString(POS_NET_UPLOAD_TEXT_X, POS_NET_UPLOAD_TEXT_Y, NET_TEXT_WIDTH, NET_TEXT_HEIGHT, hostInfo.netUploadData, NET_TEXT_SIZE, TFT_ORANGE, ML_DATUM);
   TJpgDec.drawJpg(POS_NET_DOWNLOAD_ICON_X, POS_NET_DOWNLOAD_ICON_Y, idownload_20X20, sizeof(idownload_20X20));
   drawTextString(POS_NET_DOWNLOAD_TEXT_X, POS_NET_DOWNLOAD_TEXT_Y, NET_TEXT_WIDTH, NET_TEXT_HEIGHT, hostInfo.netDownloadData, NET_TEXT_SIZE, TFT_ORANGE, ML_DATUM);
 
