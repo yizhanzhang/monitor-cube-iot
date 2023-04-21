@@ -31,9 +31,12 @@ void drawTextString(int32_t x, int32_t y, int width, int height, String text, in
   clk.fillSprite(bgColor);
   clk.setTextColor(color);
   clk.setTextDatum(datum);
-  // support wechat font for 20 size
+  // support wechat font for 20 size and 10 size
   if (fontSize == 4) {
     clk.setFreeFont(MYFONT20);
+    clk.setTextSize(1);
+  } else if (fontSize == 2) {
+    clk.setFreeFont(MYFONT10);
     clk.setTextSize(1);
   } else {
     clk.setTextFont(1);
@@ -54,7 +57,7 @@ void drawTextString(int32_t x, int32_t y, int width, int height, String text, in
 }
 
 McHost::McHost(void) {
-  hostInfo = HostInfo{ 0, 0, 0, "00.00M", "00.00M", 0, "unknown", "000.0"};
+  hostInfo = HostInfo{ 0, 0, 0, "00.00M", "00.00M", 0, "UNKNOWN", "000.0"};
   timestamp = 0;
 };
 
@@ -97,9 +100,9 @@ void McHost::drawInfo() {
 
   // 绘制NET
   TJpgDec.drawJpg(POS_NET_UPLOAD_ICON_X, POS_NET_UPLOAD_ICON_Y, iupload_20X20, sizeof(iupload_20X20));
-  drawTextString(POS_NET_UPLOAD_TEXT_X, POS_NET_UPLOAD_TEXT_Y, NET_TEXT_WIDTH, NET_TEXT_HEIGHT, hostInfo.netUploadData, NET_TEXT_SIZE, TFT_ORANGE, ML_DATUM);
+  drawTextString(POS_NET_UPLOAD_TEXT_X, POS_NET_UPLOAD_TEXT_Y, NET_TEXT_WIDTH, NET_TEXT_HEIGHT, hostInfo.netUploadData, NET_TEXT_SIZE, TFT_ORANGE, TFT_BLACK, ML_DATUM);
   TJpgDec.drawJpg(POS_NET_DOWNLOAD_ICON_X, POS_NET_DOWNLOAD_ICON_Y, idownload_20X20, sizeof(idownload_20X20));
-  drawTextString(POS_NET_DOWNLOAD_TEXT_X, POS_NET_DOWNLOAD_TEXT_Y, NET_TEXT_WIDTH, NET_TEXT_HEIGHT, hostInfo.netDownloadData, NET_TEXT_SIZE, TFT_ORANGE, ML_DATUM);
+  drawTextString(POS_NET_DOWNLOAD_TEXT_X, POS_NET_DOWNLOAD_TEXT_Y, NET_TEXT_WIDTH, NET_TEXT_HEIGHT, hostInfo.netDownloadData, NET_TEXT_SIZE, TFT_ORANGE, TFT_BLACK, ML_DATUM);
 
   // 绘制STOCK
   drawTextString(POS_STOCK_LABEL_X, POS_STOCK_LABEL_Y, STOCK_LABEL_WIDTH, STOCK_LABEL_HEIGHT, hostInfo.stockName, STOCK_LABEL_SIZE, TFT_WHITE, TFT_BLUE);

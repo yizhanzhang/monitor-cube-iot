@@ -13,8 +13,10 @@
 #include "../../../img/host/upload.h"
 #include "../../../img/host/error.h"
 #include "../../../img/host/unlink.h"
+#include "../../../font/WeChatSansStd_Regular10pt7b.h"
 #include "../../../font/WeChatSansStd_Regular20pt7b.h"
 
+#define MYFONT10 &WeChatSansStd_Regular10pt7b
 #define MYFONT20 &WeChatSansStd_Regular20pt7b
 
 #define RENDER_TIME_GAP 1000
