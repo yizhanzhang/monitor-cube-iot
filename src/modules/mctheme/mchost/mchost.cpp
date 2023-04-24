@@ -86,8 +86,8 @@ void McHost::drawInfo() {
     isInvalid = nowInvalid;
   }
   if (isInvalid) {
-    drawMainImage(unlink_120X120, sizeof(unlink_120X120));
-    return;
+    // drawMainImage(unlink_120X120, sizeof(unlink_120X120));
+    // return;
   }
 
   // 绘制CPU和MEM
@@ -108,6 +108,10 @@ void McHost::drawInfo() {
   drawTextString(POS_STOCK_LABEL_X, POS_STOCK_LABEL_Y, STOCK_LABEL_WIDTH, STOCK_LABEL_HEIGHT, hostInfo.stockName, STOCK_LABEL_SIZE, TFT_WHITE, TFT_BLUE);
   int priceColorArr[3] = { TFT_LIGHTGREY, TFT_RED, TFT_GREEN };
   drawTextString(POS_STOCK_PRICE_X, POS_STOCK_PRICE_Y, STOCK_PRICE_WIDTH, STOCK_PRICE_HEIGHT, hostInfo.stockData, STOCK_PRICE_SIZE, priceColorArr[hostInfo.stockStatus]);
+  int borderThickNess = 0;
+  while (borderThickNess ++ < STOCK_BORDER_THICKNESS) {
+    tft.drawRect(POS_STOCK_BORDER_X + borderThickNess, POS_STOCK_BORDER_Y + borderThickNess, STOCK_BORDER_WIDTH - 2 * borderThickNess, STOCK_BORDER_HEIGHT - 2 * borderThickNess, TFT_BLUE);
+  };
 };
 
 void McHost::updateInfo(String str) {
